@@ -1,10 +1,17 @@
 package main
 
 import (
-	_ "github.com/codegangsta/cli"
+	"github.com/codegangsta/cli"
+	"net/http"
+	"os"
 )
 
+func handler(w http.ResponseWriter, r *http.Request) {
+}
+
 func startServer(c *cli.Context) {
+	http.HandleFunc("/", handler)
+	http.ListenAndServe(":8080", nil)
 }
 
 func newContext(c *cli.Context) {
@@ -34,4 +41,5 @@ func main() {
 			Action:  info,
 		},
 	}
+	app.Run(os.Args)
 }
