@@ -1,28 +1,44 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/codegangsta/cli"
 	"io/ioutil"
 	"os"
-	"strconv"
 	"time"
 )
 
-func newContext(c *cli.Context) {
+type TimeSlice struct {
+	Start time.Time `json:"start"`
+	End   time.Time `json:"end"`
+}
+
+func switchContext(c *cli.Context) {
 	ctxFileName := os.ExpandEnv(c.GlobalString("ctxfile"))
 	now := time.Now()
-	err := ioutil.WriteFile(ctxFileName, []byte(strconv.FormatInt(now.UnixNano(), 10)), 0644)
+	slice := TimeSlice{
+		Start: now,
+		End:   time.Time{},
+	}
+	sliceJson, errMarshal := json.Marshal(slice)
+	if errMarshal != nil {
+		fmt.Println("Cannot serialize to JSON: %s", errMarshal)
+		return
+	}
+
+	err := ioutil.WriteFile(ctxFileName, sliceJson, 0644)
+
 	if err != nil {
 		fmt.Println("Cannot write %s: %s", ctxFileName, err)
 		return
 	}
+
 	fmt.Printf("You're working on %s", ctxFileName)
 }
 
 func info(c *cli.Context) {
 	ctxFileName := os.ExpandEnv(c.GlobalString("ctxfile"))
-	now := time.Now()
 
 	content, errReadFile := ioutil.ReadFile(ctxFileName)
 	if errReadFile != nil {
@@ -30,14 +46,14 @@ func info(c *cli.Context) {
 		return
 	}
 
-	then, errParseInt := strconv.ParseUint(string(content), 10, 64)
-	if errParseInt != nil {
-		fmt.Printf("Cannot convert %s to a timestamp", content)
+	var slice TimeSlice
+	if errUnmarshal := json.Unmarshal(content, &slice); errUnmarshal != nil {
+		fmt.Printf("%s", errUnmarshal)
 		return
 	}
 
-	duration := time.Duration(uint64(now.UnixNano()) - then)
-
+	now := time.Now()
+	duration := now.Sub(slice.Start)
 	fmt.Println(duration)
 }
 
@@ -55,9 +71,9 @@ func main() {
 
 	app.Commands = []cli.Command{
 		{
-			Name:    "new",
-			Aliases: []string{"n"},
-			Action:  newContext,
+			Name:    "switch",
+			Aliases: []string{"s"},
+			Action:  switchContext,
 		},
 		{
 			Name:    "info",
