@@ -10,22 +10,23 @@ import (
 )
 
 func newContext(c *cli.Context) {
-	localFileName := os.ExpandEnv("${HOME}/.ctx")
+	ctxFileName := os.ExpandEnv(c.GlobalString("ctxfile"))
 	now := time.Now()
-	ioutil.WriteFile(localFileName, []byte(strconv.FormatInt(now.UnixNano(), 10)), 0644)
+	ioutil.WriteFile(ctxFileName, []byte(strconv.FormatInt(now.UnixNano(), 10)), 0644)
 }
 
 func info(c *cli.Context) {
-	localFileName := os.ExpandEnv("${HOME}/.ctx")
+	ctxFileName := os.ExpandEnv(c.GlobalString("ctxfile"))
 	now := time.Now()
-	content, e1 := ioutil.ReadFile(localFileName)
-	if e1 != nil {
-		fmt.Printf("Cannot read %s", localFileName)
+
+	content, errReadFile := ioutil.ReadFile(ctxFileName)
+	if errReadFile != nil {
+		fmt.Printf("Cannot read %s", ctxFileName)
 		return
 	}
 
-	then, e2 := strconv.ParseUint(string(content), 10, 64)
-	if e2 != nil {
+	then, errParseInt := strconv.ParseUint(string(content), 10, 64)
+	if errParseInt != nil {
 		fmt.Printf("Cannot convert %s to a timestamp", content)
 		return
 	}
@@ -39,6 +40,14 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "ctx"
 	app.Usage = "CLI command to manage your working context"
+	app.Flags = []cli.Flag{
+		cli.StringFlag{
+			Name:  "ctxfile,f",
+			Value: "${HOME}/.ctx",
+			Usage: "Path to the context file",
+		},
+	}
+
 	app.Commands = []cli.Command{
 		{
 			Name:    "new",
