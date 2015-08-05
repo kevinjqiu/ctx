@@ -14,6 +14,20 @@ type TimeSlice struct {
 	End   time.Time `json:"end"`
 }
 
+func deserialize(ctxFileName string) (*TimeSlice, error) {
+	content, errReadFile := ioutil.ReadFile(ctxFileName)
+	if errReadFile != nil {
+		return nil, errReadFile
+	}
+
+	var slice TimeSlice
+	if errUnmarshal := json.Unmarshal(content, &slice); errUnmarshal != nil {
+		return nil, errUnmarshal
+	}
+
+	return &slice, nil
+}
+
 func switchContext(c *cli.Context) {
 	ctxFileName := os.ExpandEnv(c.GlobalString("ctxfile"))
 	now := time.Now()
@@ -40,18 +54,11 @@ func switchContext(c *cli.Context) {
 func info(c *cli.Context) {
 	ctxFileName := os.ExpandEnv(c.GlobalString("ctxfile"))
 
-	content, errReadFile := ioutil.ReadFile(ctxFileName)
-	if errReadFile != nil {
-		fmt.Printf("Cannot read %s", ctxFileName)
+	slice, err := deserialize(ctxFileName)
+	if err != nil {
+		fmt.Printf("%s", err)
 		return
 	}
-
-	var slice TimeSlice
-	if errUnmarshal := json.Unmarshal(content, &slice); errUnmarshal != nil {
-		fmt.Printf("%s", errUnmarshal)
-		return
-	}
-
 	now := time.Now()
 	duration := now.Sub(slice.Start)
 	fmt.Println(duration)
