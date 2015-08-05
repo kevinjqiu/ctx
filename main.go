@@ -10,8 +10,8 @@ import (
 )
 
 type TimeSlice struct {
-	Start time.Time `json:"start"`
-	End   time.Time `json:"end"`
+	Start *time.Time `json:"start"`
+	End   *time.Time `json:"end"`
 }
 
 func deserialize(ctxFileName string) (*TimeSlice, error) {
@@ -32,8 +32,8 @@ func switchContext(c *cli.Context) {
 	ctxFileName := os.ExpandEnv(c.GlobalString("ctxfile"))
 	now := time.Now()
 	slice := TimeSlice{
-		Start: now,
-		End:   time.Time{},
+		Start: &now,
+		End:   nil,
 	}
 	sliceJson, errMarshal := json.Marshal(slice)
 	if errMarshal != nil {
@@ -60,7 +60,7 @@ func info(c *cli.Context) {
 		return
 	}
 	now := time.Now()
-	duration := now.Sub(slice.Start)
+	duration := now.Sub(*slice.Start)
 	fmt.Println(duration)
 }
 
