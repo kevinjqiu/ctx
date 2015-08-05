@@ -12,7 +12,12 @@ import (
 func newContext(c *cli.Context) {
 	ctxFileName := os.ExpandEnv(c.GlobalString("ctxfile"))
 	now := time.Now()
-	ioutil.WriteFile(ctxFileName, []byte(strconv.FormatInt(now.UnixNano(), 10)), 0644)
+	err := ioutil.WriteFile(ctxFileName, []byte(strconv.FormatInt(now.UnixNano(), 10)), 0644)
+	if err != nil {
+		fmt.Println("Cannot write %s: %s", ctxFileName, err)
+		return
+	}
+	fmt.Printf("You're working on %s", ctxFileName)
 }
 
 func info(c *cli.Context) {
