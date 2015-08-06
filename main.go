@@ -14,22 +14,40 @@ type TimeSlice struct {
 	End   *time.Time `json:"end"`
 }
 
-func deserialize(ctxFileName string) (*TimeSlice, error) {
+const InvalidDuration = time.Duration(-1)
+
+func (timeSlice *TimeSlice) Duration() time.Duration {
+	if timeSlice.Start == nil {
+		return InvalidDuration
+	}
+	if timeSlice.End == nil {
+		return InvalidDuration
+	}
+
+	return timeSlice.End.Sub(*timeSlice.Start)
+}
+
+func (timeSlice *TimeSlice) IsComplete() bool {
+	return timeSlice.End != nil
+}
+
+func deserialize(ctxFileName string) ([]TimeSlice, error) {
 	content, errReadFile := ioutil.ReadFile(ctxFileName)
 	if errReadFile != nil {
 		return nil, errReadFile
 	}
 
-	var slice TimeSlice
-	if errUnmarshal := json.Unmarshal(content, &slice); errUnmarshal != nil {
+	var slices []TimeSlice
+	if errUnmarshal := json.Unmarshal(content, &slices); errUnmarshal != nil {
 		return nil, errUnmarshal
 	}
 
-	return &slice, nil
+	return slices, nil
 }
 
 func switchContext(c *cli.Context) {
 	ctxFileName := os.ExpandEnv(c.GlobalString("ctxfile"))
+
 	now := time.Now()
 	slice := TimeSlice{
 		Start: &now,
@@ -54,13 +72,31 @@ func switchContext(c *cli.Context) {
 func info(c *cli.Context) {
 	ctxFileName := os.ExpandEnv(c.GlobalString("ctxfile"))
 
-	slice, err := deserialize(ctxFileName)
+	slices, err := deserialize(ctxFileName)
 	if err != nil {
 		fmt.Printf("%s", err)
 		return
 	}
-	now := time.Now()
-	duration := now.Sub(*slice.Start)
+
+	if len(slices) == 0 {
+		fmt.Println("You have not started a context")
+		return
+	}
+
+	var duration time.Duration
+
+	for _, slice := range slices {
+		if slice.IsComplete() {
+			duration += slice.Duration()
+		}
+	}
+
+	lastSlice := slices[len(slices)-1]
+	if !lastSlice.IsComplete() {
+		now := time.Now()
+		duration += now.Sub(*lastSlice.Start)
+	}
+
 	fmt.Println(duration)
 }
 
