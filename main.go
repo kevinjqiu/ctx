@@ -82,8 +82,7 @@ func switchContext(c *cli.Context) {
 
 	slices, errDeserialize := deserialize(ctxFileName)
 	if errDeserialize != nil {
-		fmt.Printf("%s", errDeserialize)
-		return
+		slices = make([]TimeSlice, 0)
 	}
 
 	now := time.Now()
