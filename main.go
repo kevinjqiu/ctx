@@ -45,6 +45,19 @@ func deserialize(ctxFileName string) ([]TimeSlice, error) {
 	return slices, nil
 }
 
+func serialize(ctxFileName string, slices []TimeSlice) error {
+	slicesJson, errMarshal := json.Marshal(slices)
+	if errMarshal != nil {
+		return errMarshal
+	}
+
+	if errWriteFile := ioutil.WriteFile(ctxFileName, slicesJson, 0644); errWriteFile != nil {
+		return errWriteFile
+	}
+
+	return nil
+}
+
 func stopContext(c *cli.Context) {
 	ctxFileName := os.ExpandEnv(c.GlobalString("ctxfile"))
 
@@ -63,16 +76,8 @@ func stopContext(c *cli.Context) {
 	now := time.Now()
 	slice.End = &now
 
-	slicesJson, errMarshal := json.Marshal(slices)
-	if errMarshal != nil {
-		fmt.Println("Cannot serialize to JSON: %s", errMarshal)
-		return
-	}
-
-	err := ioutil.WriteFile(ctxFileName, slicesJson, 0644)
-
-	if err != nil {
-		fmt.Println("Cannot write %s: %s", ctxFileName, err)
+	if errSerialize := serialize(ctxFileName, slices); errSerialize != nil {
+		fmt.Printf("%s", errSerialize)
 		return
 	}
 }
@@ -93,16 +98,8 @@ func switchContext(c *cli.Context) {
 
 	slices = append(slices, slice)
 
-	slicesJson, errMarshal := json.Marshal(slices)
-	if errMarshal != nil {
-		fmt.Println("Cannot serialize to JSON: %s", errMarshal)
-		return
-	}
-
-	err := ioutil.WriteFile(ctxFileName, slicesJson, 0644)
-
-	if err != nil {
-		fmt.Println("Cannot write %s: %s", ctxFileName, err)
+	if errSerialize := serialize(ctxFileName, slices); errSerialize != nil {
+		fmt.Printf("%s", errSerialize)
 		return
 	}
 
