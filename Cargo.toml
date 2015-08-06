@@ -2,3 +2,8 @@
 name = "ctx"
 version = "0.1.0"
 authors = ["Kevin Qiu <kevin@idempotent.ca>"]
+description = "A CLI utility to manage working context"
+license = "Apache"
+
+[dependencies]
+clap = "*"
