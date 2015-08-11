@@ -56,12 +56,14 @@ func switchContext(c *cli.Context) {
 }
 
 func info(c *cli.Context) {
-	// storage, err := NewStorage(os.ExpandEnv(c.GlobalString("ctxfile")))
+	storage, err := NewStorage(os.ExpandEnv(c.GlobalString("ctxfile")))
 
-	// if err != nil {
-	//     fmt.Printf("%s", err)
-	//     return
-	// }
+	if err != nil {
+		fmt.Printf("%s", err)
+		return
+	}
+
+	storage.GetCurrentContext()
 
 	// slices, err := deserialize(ctxFileName)
 	// if err != nil {

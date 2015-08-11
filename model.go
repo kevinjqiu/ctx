@@ -96,7 +96,7 @@ func (s *Storage) Save() error {
 
 func (s *Storage) SwitchContext(contextId string) error {
 	if s.CurrentContextId == contextId {
-		currentContext := s.GetContextById(s.CurrentContextId)
+		currentContext := s.GetCurrentContext()
 		if currentContext != nil {
 			currentContext.Resume()
 		} else {
@@ -107,7 +107,7 @@ func (s *Storage) SwitchContext(contextId string) error {
 			s.Contexts = append(s.Contexts, context)
 		}
 	} else {
-		currentContext := s.GetContextById(s.CurrentContextId)
+		currentContext := s.GetCurrentContext()
 		currentContext.Stop()
 		context := Context{
 			Id: contextId,
@@ -119,6 +119,10 @@ func (s *Storage) SwitchContext(contextId string) error {
 	s.CurrentContextId = contextId
 	err := s.Save()
 	return err
+}
+
+func (s *Storage) GetCurrentContext() *Context {
+	return s.GetContextById(s.CurrentContextId)
 }
 
 func deserialize(ctxFileName string) ([]TimeSlice, error) {
