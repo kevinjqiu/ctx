@@ -34,12 +34,20 @@ type Context struct {
 }
 
 func (c *Context) Start() {
+	// TODO:
 }
 
 func (c *Context) Stop() {
+	// TODO:
 }
 
 func (c *Context) Resume() {
+	// TODO:
+}
+
+func (c *Context) GetTotalDuration() time.Duration {
+	// TODO:
+	return time.Duration(0)
 }
 
 type Storage struct {
