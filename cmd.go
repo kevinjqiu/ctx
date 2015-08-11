@@ -56,32 +56,37 @@ func switchContext(c *cli.Context) {
 }
 
 func info(c *cli.Context) {
-	ctxFileName := os.ExpandEnv(c.GlobalString("ctxfile"))
+	// storage, err := NewStorage(os.ExpandEnv(c.GlobalString("ctxfile")))
 
-	slices, err := deserialize(ctxFileName)
-	if err != nil {
-		fmt.Printf("%s", err)
-		return
-	}
+	// if err != nil {
+	//     fmt.Printf("%s", err)
+	//     return
+	// }
 
-	if len(slices) == 0 {
-		fmt.Println("You have not started a context")
-		return
-	}
+	// slices, err := deserialize(ctxFileName)
+	// if err != nil {
+	//     fmt.Printf("%s", err)
+	//     return
+	// }
 
-	var duration time.Duration
+	// if len(slices) == 0 {
+	//     fmt.Println("You have not started a context")
+	//     return
+	// }
 
-	for _, slice := range slices {
-		if slice.IsComplete() {
-			duration += slice.Duration()
-		}
-	}
+	// var duration time.Duration
 
-	lastSlice := slices[len(slices)-1]
-	if !lastSlice.IsComplete() {
-		now := time.Now()
-		duration += now.Sub(*lastSlice.Start)
-	}
+	// for _, slice := range slices {
+	//     if slice.IsComplete() {
+	//         duration += slice.Duration()
+	//     }
+	// }
 
-	fmt.Println(duration)
+	// lastSlice := slices[len(slices)-1]
+	// if !lastSlice.IsComplete() {
+	//     now := time.Now()
+	//     duration += now.Sub(*lastSlice.Start)
+	// }
+
+	// fmt.Println(duration)
 }

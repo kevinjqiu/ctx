@@ -62,12 +62,13 @@ func NewStorage(fileName string) (*Storage, error) {
 	storage := Storage{
 		FileName: fileName,
 		Version:  Version,
+		Contexts: []Context{},
 	}
 
 	content, errReadFile := ioutil.ReadFile(fileName)
 	if errReadFile != nil {
 		if os.IsNotExist(errReadFile) {
-			storage.Save()
+			return &storage, nil
 		} else {
 			return nil, errReadFile
 		}
