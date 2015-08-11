@@ -1,10 +1,8 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/codegangsta/cli"
-	"io/ioutil"
 	"os"
 	"time"
 )
@@ -34,27 +32,36 @@ func stopContext(c *cli.Context) {
 }
 
 func switchContext(c *cli.Context) {
-	ctxFileName := os.ExpandEnv(c.GlobalString("ctxfile"))
+	contextId := c.Args()[0]
+	// TODO: error if arg not provided
+	storage, err := NewStorage(os.ExpandEnv(c.GlobalString("ctxfile")))
 
-	slices, errDeserialize := deserialize(ctxFileName)
-	if errDeserialize != nil {
-		slices = make([]TimeSlice, 0)
+	if err != nil {
+		// TODO: nicer error message
+		panic(err)
 	}
 
-	now := time.Now()
-	slice := TimeSlice{
-		Start: &now,
-		End:   nil,
-	}
+	// now := time.Now()
+	// slice := TimeSlice{
+	//     Start: &now,
+	//     End:   nil,
+	// }
 
-	slices = append(slices, slice)
+	err = storage.SwitchContext(contextId)
 
-	if errSerialize := serialize(ctxFileName, slices); errSerialize != nil {
-		fmt.Printf("%s", errSerialize)
+	// slices = append(slices, slice)
+
+	// if errSerialize := serialize(ctxFileName, slices); errSerialize != nil {
+	//     fmt.Printf("%s", errSerialize)
+	//     return
+	// }
+
+	if err != nil {
+		fmt.Printf("%s", err)
 		return
 	}
 
-	fmt.Printf("You're working on %s", ctxFileName)
+	fmt.Printf("You're working on %s", contextId)
 }
 
 func info(c *cli.Context) {
@@ -86,31 +93,4 @@ func info(c *cli.Context) {
 	}
 
 	fmt.Println(duration)
-}
-
-func deserialize(ctxFileName string) ([]TimeSlice, error) {
-	content, errReadFile := ioutil.ReadFile(ctxFileName)
-	if errReadFile != nil {
-		return nil, errReadFile
-	}
-
-	var slices []TimeSlice
-	if errUnmarshal := json.Unmarshal(content, &slices); errUnmarshal != nil {
-		return nil, errUnmarshal
-	}
-
-	return slices, nil
-}
-
-func serialize(ctxFileName string, slices []TimeSlice) error {
-	slicesJson, errMarshal := json.Marshal(slices)
-	if errMarshal != nil {
-		return errMarshal
-	}
-
-	if errWriteFile := ioutil.WriteFile(ctxFileName, slicesJson, 0644); errWriteFile != nil {
-		return errWriteFile
-	}
-
-	return nil
 }
