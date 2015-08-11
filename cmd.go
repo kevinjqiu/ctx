@@ -32,29 +32,20 @@ func stopContext(c *cli.Context) {
 }
 
 func switchContext(c *cli.Context) {
+	if len(c.Args()) != 1 {
+		fmt.Printf("You must provide the id of the context\n")
+		return
+	}
+
 	contextId := c.Args()[0]
-	// TODO: error if arg not provided
 	storage, err := NewStorage(os.ExpandEnv(c.GlobalString("ctxfile")))
 
 	if err != nil {
-		// TODO: nicer error message
-		panic(err)
+		fmt.Printf("%s", err)
+		return
 	}
 
-	// now := time.Now()
-	// slice := TimeSlice{
-	//     Start: &now,
-	//     End:   nil,
-	// }
-
 	err = storage.SwitchContext(contextId)
-
-	// slices = append(slices, slice)
-
-	// if errSerialize := serialize(ctxFileName, slices); errSerialize != nil {
-	//     fmt.Printf("%s", errSerialize)
-	//     return
-	// }
 
 	if err != nil {
 		fmt.Printf("%s", err)

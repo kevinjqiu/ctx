@@ -3,10 +3,13 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
+	"os"
 	"time"
 )
 
 const InvalidDuration = time.Duration(-1)
+
+const Version = "1.0"
 
 type TimeSlice struct {
 	Start *time.Time `json:"start"`
@@ -42,7 +45,8 @@ func (c *Context) Resume() {
 type Storage struct {
 	CurrentContextId string    `json:"current_context_id"`
 	Contexts         []Context `json:"contexts"`
-	FileName         string
+	FileName         string    `json:"file_name"`
+	Version          string    `json:"version"`
 }
 
 func (s *Storage) GetContextById(contextId string) *Context {
@@ -57,11 +61,16 @@ func (s *Storage) GetContextById(contextId string) *Context {
 func NewStorage(fileName string) (*Storage, error) {
 	storage := Storage{
 		FileName: fileName,
+		Version:  Version,
 	}
 
 	content, errReadFile := ioutil.ReadFile(fileName)
 	if errReadFile != nil {
-		return nil, errReadFile
+		if os.IsNotExist(errReadFile) {
+			storage.Save()
+		} else {
+			return nil, errReadFile
+		}
 	}
 
 	if errUnmarshal := json.Unmarshal(content, &storage); errUnmarshal != nil {
