@@ -17,10 +17,7 @@ type TimeSlice struct {
 const InvalidDuration = time.Duration(-1)
 
 func (timeSlice *TimeSlice) Duration() time.Duration {
-	if timeSlice.Start == nil {
-		return InvalidDuration
-	}
-	if timeSlice.End == nil {
+	if timeSlice.Start == nil || timeSlice.End == nil {
 		return InvalidDuration
 	}
 
