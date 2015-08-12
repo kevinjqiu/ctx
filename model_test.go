@@ -49,3 +49,36 @@ func TestContextStartOnExistingStillRunningContext(t *testing.T) {
 	assert.Equal(t, start, *ctx.TimeSlices[0].Start)
 	assert.Nil(t, ctx.TimeSlices[0].End)
 }
+
+func TestContextStopOnExistingPausedContext(t *testing.T) {
+	start := time.Unix(1439347110, 0)
+	end := time.Unix(1439347115, 0)
+	ctx := Context{
+		Id: "id",
+		TimeSlices: []TimeSlice{
+			newTimeSlice(start, end),
+		},
+	}
+
+	ctx.Stop()
+
+	assert.Equal(t, 1, len(ctx.TimeSlices))
+	assert.Equal(t, start, *ctx.TimeSlices[0].Start)
+	assert.Equal(t, end, *ctx.TimeSlices[0].End)
+}
+
+func TestContextStopOnRunningContext(t *testing.T) {
+	start := time.Unix(1439347110, 0)
+	ctx := Context{
+		Id: "id",
+		TimeSlices: []TimeSlice{
+			TimeSlice{&start, nil},
+		},
+	}
+
+	ctx.Stop()
+
+	assert.Equal(t, 1, len(ctx.TimeSlices))
+	assert.Equal(t, start, *ctx.TimeSlices[0].Start)
+	assert.NotNil(t, ctx.TimeSlices[0].End)
+}

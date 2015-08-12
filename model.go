@@ -45,11 +45,17 @@ func (c *Context) Start() {
 }
 
 func (c *Context) Stop() {
-	// TODO:
-}
+	if len(c.TimeSlices) == 0 {
+		return
+	}
 
-func (c *Context) Resume() {
-	// TODO:
+	latest := &c.TimeSlices[len(c.TimeSlices)-1]
+	if latest.End != nil {
+		return
+	}
+
+	now := time.Now()
+	latest.End = &now
 }
 
 func (c *Context) GetTotalDuration() time.Duration {
@@ -113,7 +119,7 @@ func (s *Storage) SwitchContext(contextId string) error {
 	if s.CurrentContextId == contextId {
 		currentContext := s.GetCurrentContext()
 		if currentContext != nil {
-			currentContext.Resume()
+			currentContext.Start()
 		} else {
 			context := Context{
 				Id: contextId,
