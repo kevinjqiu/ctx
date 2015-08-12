@@ -72,7 +72,9 @@ func (s *Storage) SwitchContext(contextId string) error {
 		}
 	} else {
 		currentContext := s.GetCurrentContext()
-		currentContext.Stop()
+		if currentContext != nil {
+			currentContext.Stop()
+		}
 		context := Context{
 			Id: contextId,
 		}

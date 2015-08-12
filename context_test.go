@@ -10,6 +10,10 @@ func newTimeSlice(start time.Time, end time.Time) TimeSlice {
 	return TimeSlice{&start, &end}
 }
 
+func newIncompleteTimeSlice(start time.Time) TimeSlice {
+	return TimeSlice{&start, nil}
+}
+
 func TestContextStartOnNewContext(t *testing.T) {
 	ctx := Context{Id: "id"}
 	ctx.Start()
