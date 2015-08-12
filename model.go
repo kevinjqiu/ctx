@@ -34,7 +34,14 @@ type Context struct {
 }
 
 func (c *Context) Start() {
-	// TODO:
+	if len(c.TimeSlices) > 0 {
+		latest := c.TimeSlices[len(c.TimeSlices)-1]
+		if latest.End == nil {
+			return
+		}
+	}
+	now := time.Now()
+	c.TimeSlices = append(c.TimeSlices, TimeSlice{&now, nil})
 }
 
 func (c *Context) Stop() {
