@@ -90,30 +90,3 @@ func (s *Storage) SwitchContext(contextId string) error {
 func (s *Storage) GetCurrentContext() *Context {
 	return s.GetContextById(s.CurrentContextId)
 }
-
-func deserialize(ctxFileName string) ([]TimeSlice, error) {
-	content, errReadFile := ioutil.ReadFile(ctxFileName)
-	if errReadFile != nil {
-		return nil, errReadFile
-	}
-
-	var slices []TimeSlice
-	if errUnmarshal := json.Unmarshal(content, &slices); errUnmarshal != nil {
-		return nil, errUnmarshal
-	}
-
-	return slices, nil
-}
-
-func serialize(ctxFileName string, slices []TimeSlice) error {
-	slicesJson, errMarshal := json.Marshal(slices)
-	if errMarshal != nil {
-		return errMarshal
-	}
-
-	if errWriteFile := ioutil.WriteFile(ctxFileName, slicesJson, 0644); errWriteFile != nil {
-		return errWriteFile
-	}
-
-	return nil
-}

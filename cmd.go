@@ -4,31 +4,29 @@ import (
 	"fmt"
 	"github.com/codegangsta/cli"
 	"os"
-	"time"
 )
 
+func getRequestedStorage(c *cli.Context) *Storage {
+	storage, err := NewStorage(os.ExpandEnv(c.GlobalString("ctxfile")))
+
+	if err != nil {
+		panic(err)
+	}
+	return storage
+}
+
 func stopContext(c *cli.Context) {
-	ctxFileName := os.ExpandEnv(c.GlobalString("ctxfile"))
+	storage := getRequestedStorage(c)
 
-	slices, errDeserialize := deserialize(ctxFileName)
-	if errDeserialize != nil {
-		fmt.Printf("%s", errDeserialize)
+	currentContext := storage.GetCurrentContext()
+
+	if currentContext == nil {
+		fmt.Println("No current context. Start a context first!")
 		return
 	}
 
-	if len(slices) == 0 {
-		fmt.Println("You must start a context first")
-		return
-	}
-
-	slice := &slices[len(slices)-1]
-	now := time.Now()
-	slice.End = &now
-
-	if errSerialize := serialize(ctxFileName, slices); errSerialize != nil {
-		fmt.Printf("%s", errSerialize)
-		return
-	}
+	currentContext.Stop()
+	storage.Save()
 }
 
 func switchContext(c *cli.Context) {
@@ -56,40 +54,7 @@ func switchContext(c *cli.Context) {
 }
 
 func info(c *cli.Context) {
-	storage, err := NewStorage(os.ExpandEnv(c.GlobalString("ctxfile")))
-
-	if err != nil {
-		fmt.Printf("%s", err)
-		return
-	}
-
+	storage := getRequestedStorage(c)
 	context := storage.GetCurrentContext()
-	fmt.Printf("%s", context.GetTotalDuration().String())
-
-	// slices, err := deserialize(ctxFileName)
-	// if err != nil {
-	//     fmt.Printf("%s", err)
-	//     return
-	// }
-
-	// if len(slices) == 0 {
-	//     fmt.Println("You have not started a context")
-	//     return
-	// }
-
-	// var duration time.Duration
-
-	// for _, slice := range slices {
-	//     if slice.IsComplete() {
-	//         duration += slice.Duration()
-	//     }
-	// }
-
-	// lastSlice := slices[len(slices)-1]
-	// if !lastSlice.IsComplete() {
-	//     now := time.Now()
-	//     duration += now.Sub(*lastSlice.Start)
-	// }
-
-	// fmt.Println(duration)
+	fmt.Printf("%s\t%s", context.Id, context.GetTotalDuration().String())
 }
