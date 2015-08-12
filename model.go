@@ -4,29 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"os"
-	"time"
 )
-
-const InvalidDuration = time.Duration(-1)
-
-const Version = "1.0"
-
-type TimeSlice struct {
-	Start *time.Time `json:"start"`
-	End   *time.Time `json:"end"`
-}
-
-func (timeSlice *TimeSlice) Duration() time.Duration {
-	if timeSlice.Start == nil || timeSlice.End == nil {
-		return InvalidDuration
-	}
-
-	return timeSlice.End.Sub(*timeSlice.Start)
-}
-
-func (timeSlice *TimeSlice) IsComplete() bool {
-	return timeSlice.End != nil
-}
 
 type Storage struct {
 	CurrentContextId string    `json:"current_context_id"`

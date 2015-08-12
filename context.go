@@ -38,7 +38,7 @@ func (c *Context) GetTotalDuration() time.Duration {
 	duration := time.Duration(0)
 	for _, timeSlice := range c.TimeSlices {
 		if timeSlice.IsComplete() {
-			duration = duration + timeSlice.Duration()
+			duration = duration + *timeSlice.Duration()
 		}
 	}
 	return duration
