@@ -64,7 +64,7 @@ func info(c *cli.Context) {
 	}
 
 	context := storage.GetCurrentContext()
-	fmt.Print("%s", context.GetTotalDuration())
+	fmt.Printf("%d", context.GetTotalDuration())
 
 	// slices, err := deserialize(ctxFileName)
 	// if err != nil {
