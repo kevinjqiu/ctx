@@ -82,3 +82,44 @@ func TestContextStopOnRunningContext(t *testing.T) {
 	assert.Equal(t, start, *ctx.TimeSlices[0].Start)
 	assert.NotNil(t, ctx.TimeSlices[0].End)
 }
+
+func TestGetTotalDurationWithNoTimeSlices(t *testing.T) {
+	ctx := Context{Id: "id"}
+	assert.Equal(t, 0, ctx.GetTotalDuration())
+}
+
+func TestGetTotalDurationWithNoCompleteTimeSlices(t *testing.T) {
+	start := time.Unix(1439347110, 0)
+	ctx := Context{
+		Id: "id",
+		TimeSlices: []TimeSlice{
+			TimeSlice{&start, nil},
+		},
+	}
+	assert.Equal(t, 0, ctx.GetTotalDuration())
+}
+
+func TestGetTotalDurationWithCompleteTimeSlices(t *testing.T) {
+	ctx := Context{
+		Id: "id",
+		TimeSlices: []TimeSlice{
+			newTimeSlice(time.Unix(1439347110, 0), time.Unix(1439347115, 0)),
+			newTimeSlice(time.Unix(1439347120, 0), time.Unix(1439347125, 0)),
+		},
+	}
+
+	assert.Equal(t, 10, ctx.GetTotalDuration().Seconds())
+}
+
+func TestGetTotalDurationWithSomeIncompleteTimeSlices(t *testing.T) {
+	start2 := time.Unix(1439347120, 0)
+	ctx := Context{
+		Id: "id",
+		TimeSlices: []TimeSlice{
+			newTimeSlice(time.Unix(1439347110, 0), time.Unix(1439347115, 0)),
+			TimeSlice{&start2, nil},
+		},
+	}
+
+	assert.Equal(t, 5, ctx.GetTotalDuration().Seconds())
+}

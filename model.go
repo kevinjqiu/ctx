@@ -28,41 +28,6 @@ func (timeSlice *TimeSlice) IsComplete() bool {
 	return timeSlice.End != nil
 }
 
-type Context struct {
-	Id         string      `json:"id"`
-	TimeSlices []TimeSlice `json:"time_slices"`
-}
-
-func (c *Context) Start() {
-	if len(c.TimeSlices) > 0 {
-		latest := c.TimeSlices[len(c.TimeSlices)-1]
-		if latest.End == nil {
-			return
-		}
-	}
-	now := time.Now()
-	c.TimeSlices = append(c.TimeSlices, TimeSlice{&now, nil})
-}
-
-func (c *Context) Stop() {
-	if len(c.TimeSlices) == 0 {
-		return
-	}
-
-	latest := &c.TimeSlices[len(c.TimeSlices)-1]
-	if latest.End != nil {
-		return
-	}
-
-	now := time.Now()
-	latest.End = &now
-}
-
-func (c *Context) GetTotalDuration() time.Duration {
-	// TODO:
-	return time.Duration(0)
-}
-
 type Storage struct {
 	CurrentContextId string    `json:"current_context_id"`
 	Contexts         []Context `json:"contexts"`
