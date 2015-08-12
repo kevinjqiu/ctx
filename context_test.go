@@ -100,7 +100,7 @@ func TestGetTotalDurationWithNoCompleteTimeSlices(t *testing.T) {
 			TimeSlice{&start, nil},
 		},
 	}
-	assert.Equal(t, 0, ctx.GetTotalDuration())
+	assert.InDelta(t, time.Now().Sub(start).Seconds(), ctx.GetTotalDuration().Seconds(), 1)
 }
 
 func TestGetTotalDurationWithCompleteTimeSlices(t *testing.T) {
@@ -125,5 +125,5 @@ func TestGetTotalDurationWithSomeIncompleteTimeSlices(t *testing.T) {
 		},
 	}
 
-	assert.Equal(t, 5, ctx.GetTotalDuration().Seconds())
+	assert.InDelta(t, 5+time.Now().Sub(start2).Seconds(), ctx.GetTotalDuration().Seconds(), 1)
 }
