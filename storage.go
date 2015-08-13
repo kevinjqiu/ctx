@@ -89,3 +89,11 @@ func (s *Storage) SwitchContext(contextId string) error {
 func (s *Storage) GetCurrentContext() *Context {
 	return s.GetContextById(s.CurrentContextId)
 }
+
+func (s *Storage) ListContexts() []string {
+	var retval = make([]string, len(s.Contexts))
+	for i, context := range s.Contexts {
+		retval[i] = context.Id
+	}
+	return retval
+}

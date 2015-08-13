@@ -102,3 +102,30 @@ func TestSwitchContextOnCurrentContext(t *testing.T) {
 	assert.NotNil(t, storage.Contexts[0].TimeSlices[0].Start)
 	assert.Nil(t, storage.Contexts[0].TimeSlices[0].End)
 }
+
+func TestListContextsNoContext(t *testing.T) {
+	storage := Storage{
+		CurrentContextId: "",
+		Contexts:         []*Context{},
+	}
+	contexts := storage.ListContexts()
+
+	assert.Equal(t, 0, len(contexts))
+}
+
+func TestListContextsWithContexts(t *testing.T) {
+	storage := Storage{
+		CurrentContextId: "ID-1",
+		Contexts: []*Context{
+			&Context{
+				Id: "ID-1",
+			},
+			&Context{
+				Id: "ID-2",
+			},
+		},
+	}
+	contexts := storage.ListContexts()
+
+	assert.Equal(t, []string{"ID-1", "ID-2"}, contexts)
+}
