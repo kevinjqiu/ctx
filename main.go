@@ -33,6 +33,11 @@ func main() {
 			Aliases: []string{"st"},
 			Action:  stopContext,
 		},
+		{
+			Name:    "list",
+			Aliases: []string{"l"},
+			Action:  list,
+		},
 	}
 	app.Run(os.Args)
 }

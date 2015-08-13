@@ -90,7 +90,7 @@ func (s *Storage) GetCurrentContext() *Context {
 	return s.GetContextById(s.CurrentContextId)
 }
 
-func (s *Storage) ListContexts() []string {
+func (s *Storage) GetContextIds() []string {
 	var retval = make([]string, len(s.Contexts))
 	for i, context := range s.Contexts {
 		retval[i] = context.Id
