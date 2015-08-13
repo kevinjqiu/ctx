@@ -17,8 +17,8 @@ func TestGetContextById(t *testing.T) {
 
 	storage := Storage{
 		CurrentContextId: "ID1",
-		Contexts: []Context{
-			context1, context2,
+		Contexts: []*Context{
+			&context1, &context2,
 		},
 	}
 
@@ -38,8 +38,8 @@ func TestGetCurrentContext(t *testing.T) {
 
 	storage := Storage{
 		CurrentContextId: "ID1",
-		Contexts: []Context{
-			context1, context2,
+		Contexts: []*Context{
+			&context1, &context2,
 		},
 	}
 
@@ -60,8 +60,8 @@ func TestSwitchContextNewContext(t *testing.T) {
 func TestSwitchContextExistingContext(t *testing.T) {
 	storage := Storage{
 		CurrentContextId: "ID",
-		Contexts: []Context{
-			Context{
+		Contexts: []*Context{
+			&Context{
 				Id: "ID",
 				TimeSlices: []TimeSlice{
 					newIncompleteTimeSlice(time.Unix(1439347110, 0)),
@@ -85,8 +85,8 @@ func TestSwitchContextExistingContext(t *testing.T) {
 func TestSwitchContextOnCurrentContext(t *testing.T) {
 	storage := Storage{
 		CurrentContextId: "ID",
-		Contexts: []Context{
-			Context{
+		Contexts: []*Context{
+			&Context{
 				Id: "ID",
 				TimeSlices: []TimeSlice{
 					newIncompleteTimeSlice(time.Unix(1439347110, 0)),

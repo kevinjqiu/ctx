@@ -7,16 +7,16 @@ import (
 )
 
 type Storage struct {
-	CurrentContextId string    `json:"current_context_id"`
-	Contexts         []Context `json:"contexts"`
-	FileName         string    `json:"file_name"`
-	Version          string    `json:"version"`
+	CurrentContextId string     `json:"current_context_id"`
+	Contexts         []*Context `json:"contexts"`
+	FileName         string     `json:"file_name"`
+	Version          string     `json:"version"`
 }
 
 func (s *Storage) GetContextById(contextId string) *Context {
 	for _, context := range s.Contexts {
 		if context.Id == contextId {
-			return &context
+			return context
 		}
 	}
 	return nil
@@ -26,7 +26,7 @@ func NewStorage(fileName string) (*Storage, error) {
 	storage := Storage{
 		FileName: fileName,
 		Version:  Version,
-		Contexts: []Context{},
+		Contexts: []*Context{},
 	}
 
 	content, errReadFile := ioutil.ReadFile(fileName)
@@ -68,7 +68,7 @@ func (s *Storage) SwitchContext(contextId string) error {
 				Id: contextId,
 			}
 			context.Start()
-			s.Contexts = append(s.Contexts, context)
+			s.Contexts = append(s.Contexts, &context)
 		}
 	} else {
 		if currentContext != nil {
@@ -78,7 +78,7 @@ func (s *Storage) SwitchContext(contextId string) error {
 			Id: contextId,
 		}
 		context.Start()
-		s.Contexts = append(s.Contexts, context)
+		s.Contexts = append(s.Contexts, &context)
 	}
 
 	s.CurrentContextId = contextId
