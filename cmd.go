@@ -31,19 +31,14 @@ func stopContext(c *cli.Context) {
 
 func switchContext(c *cli.Context) {
 	if len(c.Args()) != 1 {
-		fmt.Printf("You must provide the id of the context\n")
+		fmt.Println("You must provide the id of the context")
 		return
 	}
 
 	contextId := c.Args()[0]
-	storage, err := NewStorage(os.ExpandEnv(c.GlobalString("ctxfile")))
+	storage := getRequestedStorage(c)
 
-	if err != nil {
-		fmt.Printf("%s", err)
-		return
-	}
-
-	err = storage.SwitchContext(contextId)
+	err := storage.SwitchContext(contextId)
 
 	if err != nil {
 		fmt.Printf("%s", err)
