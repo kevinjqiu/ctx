@@ -1,11 +1,15 @@
 {
 	"ImportPath": "ctx",
-	"GoVersion": "go1.2.1",
+	"GoVersion": "go1.4.2",
 	"Deps": [
 		{
 			"ImportPath": "github.com/codegangsta/cli",
 			"Comment": "1.2.0-137-gbca61c4",
 			"Rev": "bca61c476e3c752594983e4c9bcd5f62fb09f157"
+		},
+		{
+			"ImportPath": "github.com/stretchr/testify/assert",
+			"Rev": "de7fcff264cd05cc0c90c509ea789a436a0dd206"
 		}
 	]
 }
