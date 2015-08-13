@@ -13,3 +13,7 @@ A simple CLI tool for keeping track of context and time
 ## Stop time tracking on the current context
 
     ctx stop
+
+## To list all contexts
+
+    ctx list
