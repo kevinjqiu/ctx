@@ -59,8 +59,8 @@ func (s *Storage) Save() error {
 }
 
 func (s *Storage) SwitchContext(contextId string) error {
+	currentContext := s.GetCurrentContext()
 	if s.CurrentContextId == contextId {
-		currentContext := s.GetCurrentContext()
 		if currentContext != nil {
 			currentContext.Start()
 		} else {
@@ -71,7 +71,6 @@ func (s *Storage) SwitchContext(contextId string) error {
 			s.Contexts = append(s.Contexts, context)
 		}
 	} else {
-		currentContext := s.GetCurrentContext()
 		if currentContext != nil {
 			currentContext.Stop()
 		}

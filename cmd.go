@@ -39,7 +39,6 @@ func switchContext(c *cli.Context) {
 	storage := getRequestedStorage(c)
 
 	err := storage.SwitchContext(contextId)
-
 	if err != nil {
 		fmt.Printf("%s", err)
 		return
