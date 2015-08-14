@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/codegangsta/cli"
 	"os"
+	"strconv"
+	"time"
 )
 
 func getRequestedStorage(c *cli.Context) *Storage {
@@ -47,10 +49,14 @@ func switchContext(c *cli.Context) {
 	fmt.Printf("You're working on %s", contextId)
 }
 
+func fmtDuration(duration time.Duration) string {
+	return fmt.Sprintf("%sm", strconv.FormatInt(int64(duration/time.Minute), 10))
+}
+
 func info(c *cli.Context) {
 	storage := getRequestedStorage(c)
 	context := storage.GetCurrentContext()
-	fmt.Printf("%s\t%s", context.Id, context.GetTotalDuration().String())
+	fmt.Printf("%s    %s", context.Id, fmtDuration(context.GetTotalDuration()))
 }
 
 func list(c *cli.Context) {
