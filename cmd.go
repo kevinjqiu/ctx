@@ -3,10 +3,13 @@ package main
 import (
 	"fmt"
 	"github.com/codegangsta/cli"
+	"github.com/fatih/color"
 	"os"
 	"strconv"
 	"time"
 )
+
+const green = color.New(color.FgGreen).SprintFunc()
 
 func getRequestedStorage(c *cli.Context) *Storage {
 	storage, err := NewStorage(os.ExpandEnv(c.GlobalString("ctxfile")))
@@ -46,7 +49,7 @@ func switchContext(c *cli.Context) {
 		return
 	}
 
-	fmt.Printf("You're working on %s", contextId)
+	fmt.Printf("You're working on %s", green(contextId))
 }
 
 func fmtDuration(duration time.Duration) string {
