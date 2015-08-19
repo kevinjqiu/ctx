@@ -9,8 +9,6 @@ import (
 	"time"
 )
 
-const green = color.New(color.FgGreen).SprintFunc()
-
 func getRequestedStorage(c *cli.Context) *Storage {
 	storage, err := NewStorage(os.ExpandEnv(c.GlobalString("ctxfile")))
 
@@ -49,6 +47,7 @@ func switchContext(c *cli.Context) {
 		return
 	}
 
+	green := color.New(color.FgGreen).SprintFunc()
 	fmt.Printf("You're working on %s", green(contextId))
 }
 
