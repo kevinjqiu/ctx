@@ -21,17 +21,26 @@ func (c *Context) Start() {
 }
 
 func (c *Context) Stop() {
-	if len(c.TimeSlices) == 0 {
-		return
-	}
-
-	latest := &c.TimeSlices[len(c.TimeSlices)-1]
-	if latest.End != nil {
+	if c.IsStopped() {
 		return
 	}
 
 	now := time.Now()
+	latest := &c.TimeSlices[len(c.TimeSlices)-1]
 	latest.End = &now
+}
+
+func (c *Context) IsStopped() bool {
+	if len(c.TimeSlices) == 0 {
+		return true
+	}
+
+	latest := &c.TimeSlices[len(c.TimeSlices)-1]
+	if latest.End != nil {
+		return true
+	}
+
+	return false
 }
 
 func (c *Context) GetTotalDuration() time.Duration {

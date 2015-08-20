@@ -56,12 +56,22 @@ func fmtDuration(duration time.Duration) string {
 func info(c *cli.Context) {
 	storage := getRequestedStorage(c)
 	context := storage.GetCurrentContext()
-	fmt.Printf("%s    %s", context.Id, fmtDuration(context.GetTotalDuration()))
+
+	fmt.Printf("%s    %s    %s", context.Id, fmtDuration(context.GetTotalDuration()), contextStatusString(context))
 }
 
 func list(c *cli.Context) {
 	storage := getRequestedStorage(c)
 	for _, contextId := range storage.GetContextIds() {
-		fmt.Println(contextId)
+		context := storage.GetContextById(contextId)
+		fmt.Printf("%s    %s\n", contextId, contextStatusString(context))
+	}
+}
+
+func contextStatusString(context *Context) string {
+	if context.IsStopped() {
+		return red("Stopped")
+	} else {
+		return green("Active")
 	}
 }
