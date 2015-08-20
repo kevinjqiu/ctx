@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/codegangsta/cli"
-	"github.com/fatih/color"
 	"os"
 	"strconv"
 	"time"
@@ -47,7 +46,6 @@ func switchContext(c *cli.Context) {
 		return
 	}
 
-	green := color.New(color.FgGreen).SprintFunc()
 	fmt.Printf("You're working on %s", green(contextId))
 }
 
