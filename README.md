@@ -10,6 +10,8 @@ A simple CLI tool for keeping track of context and time
 
 # Install
 
+    $ go get github.com/kevinjqiu/ctx
+
 # Usage
 ## Start a new context
 
