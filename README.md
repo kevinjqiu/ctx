@@ -1,19 +1,38 @@
-# ctx
+```
+________________________  ___
+\_   ___ \__    ___/\   \/  /
+/    \  \/ |    |    \     /
+\     \____|    |    /     \
+ \______  /|____|   /___/\  \
+        \/                \_/
+```
 A simple CLI tool for keeping track of context and time
+
+# Install
 
 # Usage
 ## Start a new context
 
-    ctx start <context name>
+    $ ctx start standup
+    You're working on standup
 
-## Query the current context
+## You can put a note on the context
 
-    ctx info
+    $ ctx title "daily standup"
+    Set title for task: standup
+
+## Show the current context
+
+    $ ctx info
+    standup             daily standup       5m        Active
 
 ## Stop time tracking on the current context
 
-    ctx stop
+    $ ctx stop
 
 ## To list all contexts
 
-    ctx list
+    $ ctx list
+    foo                                     Stopped
+    grooming            grooming meeting    Stopped
+    standup             daily standup       Active
