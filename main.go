@@ -20,7 +20,7 @@ func main() {
 	app.Commands = []cli.Command{
 		{
 			Name:    "switch",
-			Aliases: []string{"s"},
+			Aliases: []string{"s, sw, start"},
 			Action:  switchContext,
 		},
 		{

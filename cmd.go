@@ -57,7 +57,7 @@ func info(c *cli.Context) {
 	storage := getRequestedStorage(c)
 	context := storage.GetCurrentContext()
 
-	fmt.Printf("%s    %s    %s", context.Id, fmtDuration(context.GetTotalDuration()), contextStatusString(context))
+	fmt.Printf("%10s    %5s    %10s", context.Id, fmtDuration(context.GetTotalDuration()), contextStatusString(context))
 }
 
 func list(c *cli.Context) {
