@@ -6,6 +6,7 @@ import (
 
 type Context struct {
 	Id         string      `json:"id"`
+	Title      string      `json:"title"`
 	TimeSlices []TimeSlice `json:"time_slices"`
 }
 

@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/codegangsta/cli"
 	"os"
+
+	"github.com/codegangsta/cli"
 )
 
 func main() {
@@ -27,6 +28,11 @@ func main() {
 			Name:    "info",
 			Aliases: []string{"i"},
 			Action:  info,
+		},
+		{
+			Name:    "title",
+			Aliases: []string{"t"},
+			Action:  editTitle,
 		},
 		{
 			Name:    "stop",

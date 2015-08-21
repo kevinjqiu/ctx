@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/codegangsta/cli"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/codegangsta/cli"
 )
 
 func getRequestedStorage(c *cli.Context) *Storage {
@@ -57,14 +58,14 @@ func info(c *cli.Context) {
 	storage := getRequestedStorage(c)
 	context := storage.GetCurrentContext()
 
-	fmt.Printf("%10s    %5s    %10s", context.Id, fmtDuration(context.GetTotalDuration()), contextStatusString(context))
+	fmt.Printf("%-20s%-20s%-10s%10s", context.Id, context.Title, fmtDuration(context.GetTotalDuration()), contextStatusString(context))
 }
 
 func list(c *cli.Context) {
 	storage := getRequestedStorage(c)
 	for _, contextId := range storage.GetContextIds() {
 		context := storage.GetContextById(contextId)
-		fmt.Printf("%s    %s\n", contextId, contextStatusString(context))
+		fmt.Printf("%-20s%-20s%10s\n", contextId, context.Title, contextStatusString(context))
 	}
 }
 
@@ -74,4 +75,14 @@ func contextStatusString(context *Context) string {
 	} else {
 		return green("Active")
 	}
+}
+
+func editTitle(c *cli.Context) {
+	storage := getRequestedStorage(c)
+	context := storage.GetCurrentContext()
+
+	title := c.Args()[0]
+	context.Title = title
+	storage.Save()
+	fmt.Printf("Set title for task: %s\n", context.Id)
 }
