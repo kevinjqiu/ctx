@@ -81,6 +81,11 @@ func editTitle(c *cli.Context) {
 	storage := getRequestedStorage(c)
 	context := storage.GetCurrentContext()
 
+	if len(c.Args()) != 1 {
+		fmt.Printf("Must supply a title")
+		return
+	}
+
 	title := c.Args()[0]
 	context.Title = title
 	storage.Save()
