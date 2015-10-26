@@ -54,3 +54,6 @@ sdist: clean
 	python setup.py sdist
 	python setup.py bdist_wheel upload
 	ls -l dist
+
+build-server-image:
+	docker build -t ctx-server .
