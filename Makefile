@@ -57,3 +57,6 @@ sdist: clean
 
 build-server-image:
 	docker build -t ctx-server .
+
+run-dev-container: build-server-image
+	docker run --rm -it -v $(shell pwd):/app -p 8080:8080 ctx-server /bin/bash
