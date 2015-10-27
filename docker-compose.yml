@@ -10,3 +10,6 @@ api:
     stdin_open: true
 db:
     image: postgres:9.5
+    environment:
+        - POSTGRES_PASSWORD=ctx
+        - POSTGRES_USER=ctx
