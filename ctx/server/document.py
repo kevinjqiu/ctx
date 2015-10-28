@@ -5,9 +5,9 @@ from couchdb import mapping
 
 
 TimeSlice = mapping.Mapping.build(
-    start_time=mapping.DateTimeField(),
-    end_time=mapping.DateTimeField(),
-    note=mapping.TextField(),
+    start_time=mapping.DateTimeField(default=datetime.datetime.now()),
+    end_time=mapping.DateTimeField(default=None),
+    note=mapping.TextField(default=''),
 )
 
 
