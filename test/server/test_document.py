@@ -6,7 +6,6 @@ class TestTask(object):
     @classmethod
     def setup_class(cls):
         cls.app = create_app()
-        cls.server = db.server
 
     def setup_method(self, method):
         for id in db.db:
@@ -14,13 +13,30 @@ class TestTask(object):
 
     def test_task_with_default_values(self):
         task = document.Task()
-        a = db.db.save(task.unwrap())
 
         assert task.title == ''
         assert task.is_active is False
         assert task.time_slices == []
+        task.store(db.db)
 
         task = db.db[task.unwrap()['_id']]
         assert task.get('title') == ''
+        assert task.get('description') == ''
         assert task.get('is_active') is False
+        assert task.get('time_slices') == []
+
+    def test_task_with_specified_values(self):
+        task = document.Task(title='ABC-123',
+                             description='Aye Bee See',
+                             is_active=True)
+        assert task.title == 'ABC-123'
+        assert task.is_active is True
+        assert task.description == 'Aye Bee See'
+        assert task.time_slices == []
+        task.store(db.db)
+
+        task = db.db[task.unwrap()['_id']]
+        assert task.get('title') == 'ABC-123'
+        assert task.get('description') == 'Aye Bee See'
+        assert task.get('is_active') is True
         assert task.get('time_slices') == []
