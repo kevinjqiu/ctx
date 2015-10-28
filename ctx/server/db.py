@@ -1,14 +1,21 @@
-from flask.ext import sqlalchemy as flask_sqlalchemy
+from couchdb import Server
 
-
+server = None
 db = None
 
 
-CONNECTION_STRING = 'postgresql+psycopg2://{user}:{password}@db/ctx'.format(
-    user='ctx', password='ctx')
-
-
 def init_db(app):
-    global db
-    app.config['SQLALCHEMY_DATABASE_URI'] = CONNECTION_STRING
-    db = flask_sqlalchemy.SQLAlchemy(app)
+    app.logger.info('Initializing db')
+    global server, db
+
+    db_url, db_name = app.config['DB_URL'], app.config['DB_NAME']
+    app.logger.info('DB_URL={}'.format(db_url))
+
+    server = Server(url=db_url)
+
+    try:
+        db = server.create(db_name)
+    except:
+        db = server[db_name]
+
+    app.db = db
