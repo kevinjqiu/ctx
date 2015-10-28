@@ -51,4 +51,9 @@ setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: Implementation :: PyPy',
     ],
+    entry_points={
+        'console_scripts': [
+            'ctx=ctx.cli:main'
+        ],
+    },
 )
