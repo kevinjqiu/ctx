@@ -1,5 +1,4 @@
 import datetime
-import uuid
 
 from couchdb import mapping
 
