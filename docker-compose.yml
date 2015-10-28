@@ -9,7 +9,8 @@ api:
     tty: true
     stdin_open: true
 db:
-    image: postgres:9.5
+    image: kevinjqiu/couchdb
     environment:
-        - POSTGRES_PASSWORD=ctx
-        - POSTGRES_USER=ctx
+        - COUCHDB_PASS=passw0rd
+    ports:
+        - "5984:5984"
