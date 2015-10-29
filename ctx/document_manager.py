@@ -10,7 +10,7 @@ class DocumentManager(object):
 
     def create_task(self, **kwargs):
         task = document.Task(**kwargs)
-        task.store(self.db)
+        a = task.store(self.db)
         return task
 
     def update_task(self, task):
