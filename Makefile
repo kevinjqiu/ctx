@@ -27,7 +27,7 @@ lint:
 	flake8 ctx test
 
 test:
-	py.test
+	CTX_CFG=test py.test
 
 test-all:
 	tox
