@@ -1,4 +1,5 @@
-from ctx import document
+import couchdb
+from ctx import document, exception
 
 
 class DocumentManager(object):
@@ -10,8 +11,12 @@ class DocumentManager(object):
 
     def create_task(self, **kwargs):
         task = document.Task(**kwargs)
-        a = task.store(self.db)
-        return task
+        try:
+            task.store(self.db)
+        except couchdb.http.ResourceConflict as e:
+            raise exception.DuplicateTaskID()
+        else:
+            return task
 
     def update_task(self, task):
         task.store(self.db)

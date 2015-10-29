@@ -1,5 +1,5 @@
 import pytest
-from ctx import document, document_manager, database
+from ctx import document, document_manager, database, exception
 from .base import NeedsDatabase
 
 
@@ -35,6 +35,11 @@ class TestDocumentManager(NeedsDatabase):
         result = self.document_manager.get_tasks()
         assert result.total_rows == 1
         assert result.rows[0].doc.get('_id') == t._id
+
+    def test_create_new_task___duplicate_task_id(self):
+        self.document_manager.create_task(_id='a')
+        with pytest.raises(exception.DuplicateTaskID):
+            self.document_manager.create_task(_id='a')
 
     def test_update_task(self):
         t = self.document_manager.create_task(_id='a', is_active=True)
