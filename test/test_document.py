@@ -1,14 +1,8 @@
 from ctx import document, database
+from .base import NeedsDatabase
 
 
-database.init()
-
-
-class TestTask(object):
-    def setup_method(self, method):
-        for id in database.db:
-            del database.db[id]
-
+class TestTask(NeedsDatabase):
     def test_task_with_default_values(self):
         task = document.Task()
 
