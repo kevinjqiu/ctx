@@ -1,0 +1,2 @@
+class DuplicateTaskID(Exception):
+    pass
