@@ -1,7 +1,8 @@
 import click
 import functools
 
-from ctx import version, config, database, document_manager
+from ctx import (
+    action, version, config, database, document_manager, exception)
 
 
 def inject_document_manager(fn):
@@ -29,15 +30,15 @@ def cmd_info():
 @click.argument('id')
 @inject_document_manager
 def cmd_new(doc_mgr, id, description):
-    task = doc_mgr.create_task(_id=id)
-    click.echo('Created task {!r}'.format(task._id))
+    action.new_task(doc_mgr, id, description)
 
 
 @click.command(name='list')
 @inject_document_manager
 def cmd_list(doc_mgr):
     tasks = doc_mgr.get_tasks()
-    import pdb; pdb.set_trace()
+    for task in tasks.rows:
+        click.echo("{} {}".format(task.doc.id, task.doc.get('description')))
 
 
 main.add_command(cmd_info)

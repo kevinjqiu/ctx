@@ -1,4 +1,7 @@
+import datetime
+
 import couchdb
+
 from ctx import document, exception
 
 
@@ -10,7 +13,11 @@ class DocumentManager(object):
         return self.db.view('_all_docs', include_docs=True)
 
     def create_task(self, **kwargs):
-        task = document.Task(**kwargs)
+        params = {
+            'created_at': datetime.datetime.utcnow(),
+        }
+        params.update(kwargs)
+        task = document.Task(**params)
         try:
             task.store(self.db)
         except couchdb.http.ResourceConflict as e:
