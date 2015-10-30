@@ -17,5 +17,9 @@ def new_task(doc_mgr, id, description):
         return task
 
 
-def get_current_task(doc_mgr):
-    pass
+def show_current_task(doc_mgr):
+    current_task = doc_mgr.get_current_task()
+    if not current_task:
+        click.echo('No active tasks')
+        return
+    click.echo('{}'.format(current_task.id))

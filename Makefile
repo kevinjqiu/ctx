@@ -60,3 +60,6 @@ build-server-image:
 
 run-dev-container: build-server-image
 	docker run --rm -it -v $(shell pwd):/app -p 8080:8080 ctx-server /bin/bash
+
+sync-views:
+	CTX_CFG=localhost python -c "from ctx import database; database.init(); from ctx import view; view.sync_views(database.db)"
