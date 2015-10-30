@@ -1,4 +1,5 @@
 import logging
+import couchdb
 
 
 log = logging.getLogger(__name__)
@@ -20,6 +21,6 @@ def init():
 
     try:
         db = server[config.DB_NAME]
-    except KeyError:
+    except couchdb.http.ResourceNotFound:
         db = server.create(config.DB_NAME)
         log.info('db {!r} created'.format(config.DB_NAME))

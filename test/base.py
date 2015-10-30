@@ -7,5 +7,5 @@ class NeedsDatabase(object):
         database.init()
 
     def setup_method(self, method):
-        for id in database.db:
-            del database.db[id]
+        database.server.delete(database.db.name)
+        database.init()
