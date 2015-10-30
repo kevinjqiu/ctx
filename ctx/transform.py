@@ -5,7 +5,7 @@ from ctx import document
 
 
 def convert_to_datetime(param, key):
-    if key in param:
+    if key in param and param[key]:
         param[key] = arrow.get(param[key]).datetime
 
 
@@ -22,4 +22,4 @@ def create_time_slice(time_slice_dict):
     convert_to_datetime(time_slice_params, 'start_time')
     convert_to_datetime(time_slice_params, 'end_time')
 
-    return document.TimeSlice(**time_slice_dict)
+    return document.TimeSlice(**time_slice_params)
