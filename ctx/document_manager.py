@@ -2,7 +2,7 @@ import datetime
 
 import couchdb
 
-from ctx import document, exception
+from ctx import document, exception, view, transform
 
 
 class DocumentManager(object):
@@ -10,7 +10,14 @@ class DocumentManager(object):
         self.db = db
 
     def get_tasks(self):
-        return self.db.view('_all_docs', include_docs=True)
+        return self.db.view(view.GetTasks.uri(),
+                            wrapper=transform.create_task_from_view_result)
+
+    def get_current_task(self):
+        result = self.db.view(view.GetActiveTask.uri(),
+                              wrapper=transform.create_task_from_view_result)
+        assert result.total_rows <= 1
+        return result.rows[0]
 
     def create_task(self, **kwargs):
         params = {

@@ -22,19 +22,19 @@ class TestDocumentManager(NeedsDatabase):
         t3.store(database.db)
 
         result = self.document_manager.get_tasks()
-        assert result.total_rows == 3
-        assert result.rows[0].doc.get('_id') == t1._id
-        assert result.rows[1].doc.get('_id') == t2._id
-        assert result.rows[2].doc.get('_id') == t3._id
+        assert len(result) == 3
+        assert result.rows[0].id == t1._id
+        assert result.rows[1].id == t2._id
+        assert result.rows[2].id == t3._id
 
-        assert len(result.rows[2].doc.get('time_slices')) == 1
-        assert result.rows[2].doc.get('time_slices')[0].get('note') == 'foo'
+        assert len(result.rows[2].time_slices) == 1
+        assert result.rows[2].time_slices[0].note == 'foo'
 
     def test_create_new_task(self):
         t = self.document_manager.create_task(_id='a')
         result = self.document_manager.get_tasks()
-        assert result.total_rows == 1
-        assert result.rows[0].doc.get('_id') == t._id
+        assert len(result) == 1
+        assert result.rows[0].id == t._id
 
     def test_create_new_task___duplicate_task_id(self):
         self.document_manager.create_task(_id='a')
@@ -47,6 +47,6 @@ class TestDocumentManager(NeedsDatabase):
         self.document_manager.update_task(t)
 
         result = self.document_manager.get_tasks()
-        assert result.total_rows == 1
-        assert result.rows[0].doc.get('_id') == 'a'
-        assert result.rows[0].doc.get('is_active') is False
+        assert len(result) == 1
+        assert result.rows[0].id == 'a'
+        assert result.rows[0].is_active is False

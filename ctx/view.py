@@ -17,6 +17,11 @@ class CouchView(design.ViewDefinition):
 
         super().__init__(**params)
 
+    @classmethod
+    def uri(self):
+        return '_design/ctx/_view/{}'.format(self.view_name)
+
+
 
 class GetActiveTask(CouchView):
     view_name = 'get_active_task'
@@ -26,10 +31,16 @@ class GetActiveTask(CouchView):
         if doc.get('is_active', False):
             yield doc['_id'], doc
 
-    @classmethod
-    def uri(self):
-        return '_design/ctx/_view/{}'.format(self.view_name)
+
+class GetTasks(CouchView):
+    view_name = 'get_tasks'
+
+    @staticmethod
+    def map_fun(doc):
+        if not doc['_id'].startswith('_design'):
+            yield doc['_id'], doc
 
 
 def sync_views(db):
     GetActiveTask().sync(db)
+    GetTasks().sync(db)

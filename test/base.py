@@ -1,4 +1,4 @@
-from ctx import database
+from ctx import database, view
 
 
 class NeedsDatabase(object):
@@ -9,3 +9,4 @@ class NeedsDatabase(object):
     def setup_method(self, method):
         database.server.delete(database.db.name)
         database.init()
+        view.sync_views(database.db)

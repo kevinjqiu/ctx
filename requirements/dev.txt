@@ -3,3 +3,4 @@ ipdb
 pytest
 freezegun
 flake8==2.5.0
+arrow==0.7.0

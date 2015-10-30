@@ -15,3 +15,7 @@ def new_task(doc_mgr, id, description):
     else:
         click.echo('Created task {!r}'.format(task._id))
         return task
+
+
+def get_current_task(doc_mgr):
+    pass
