@@ -2,7 +2,7 @@ import click
 import functools
 
 from ctx import (
-    action, version, config, database, document_manager, exception)
+    action, version, config, database, document_manager)
 
 
 def inject_document_manager(fn):

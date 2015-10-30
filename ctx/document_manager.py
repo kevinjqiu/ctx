@@ -20,7 +20,7 @@ class DocumentManager(object):
         task = document.Task(**params)
         try:
             task.store(self.db)
-        except couchdb.http.ResourceConflict as e:
+        except couchdb.http.ResourceConflict:
             raise exception.DuplicateTaskID()
         else:
             return task
