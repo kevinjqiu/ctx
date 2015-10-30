@@ -16,6 +16,8 @@ class DocumentManager(object):
     def get_current_task(self):
         result = self.db.view(view.GetActiveTask.uri(),
                               wrapper=transform.create_task_from_view_result)
+        if result.total_rows == 0:
+            return None
         assert result.total_rows <= 1
         return result.rows[0]
 

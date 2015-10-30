@@ -10,9 +10,9 @@ class TestDocumentManager(NeedsDatabase):
         cls.document_manager = document_manager.DocumentManager(database.db)
 
     def test_get_all_tasks(self):
-        t1 = document.Task(_id='a', active=True)
-        t2 = document.Task(_id='b', active=False)
-        t3 = document.Task(_id='c', active=False,
+        t1 = document.Task(_id='a', is_active=True)
+        t2 = document.Task(_id='b', is_active=False)
+        t3 = document.Task(_id='c', is_active=False,
                            time_slices=[
                                document.TimeSlice(note='foo'),
                            ])
@@ -50,3 +50,17 @@ class TestDocumentManager(NeedsDatabase):
         assert len(result) == 1
         assert result.rows[0].id == 'a'
         assert result.rows[0].is_active is False
+
+    def test_get_current_task(self):
+        t1 = document.Task(_id='a', is_active=True)
+        t2 = document.Task(_id='b', is_active=False)
+        t3 = document.Task(_id='c', is_active=False,
+                           time_slices=[
+                               document.TimeSlice(note='foo'),
+                           ])
+
+        t1.store(database.db)
+        t2.store(database.db)
+        t3.store(database.db)
+        task = self.document_manager.get_current_task()
+        assert task.id == t1.id
