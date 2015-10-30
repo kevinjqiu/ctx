@@ -22,7 +22,6 @@ class CouchView(design.ViewDefinition):
         return '_design/ctx/_view/{}'.format(self.view_name)
 
 
-
 class GetActiveTask(CouchView):
     view_name = 'get_active_task'
 
