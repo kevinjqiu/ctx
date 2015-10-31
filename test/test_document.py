@@ -91,3 +91,61 @@ class TestTask(NeedsDatabase):
             task.set_active(False)
         assert len(task.time_slices) == 1
         assert task.time_slices[-1].end_time == datetime.datetime(2015, 10, 28, 12, 0, 0)
+
+    def test_task_total_time___no_time_slices(self):
+        task = document.Task(_id='a', time_slices=[])
+        assert task.total_time == datetime.timedelta(0)
+
+    def test_task_total_time___inactive_task___one_slice(self):
+        task = document.Task(
+            _id='a',
+            is_active=False,
+            time_slices=[
+                document.TimeSlice(
+                    start_time=datetime.datetime(2015, 8, 1, 10, 0, 0),
+                    end_time=datetime.datetime(2015, 8, 1, 10, 30, 0),
+                )])
+        assert task.total_time == datetime.timedelta(minutes=30)
+
+    def test_task_total_time___inactive_task___multiple_slices(self):
+        task = document.Task(
+            _id='a',
+            is_active=False,
+            time_slices=[
+                document.TimeSlice(
+                    start_time=datetime.datetime(2015, 8, 1, 10, 0, 0),
+                    end_time=datetime.datetime(2015, 8, 1, 10, 30, 0),
+                ),
+                document.TimeSlice(
+                    start_time=datetime.datetime(2015, 8, 2, 10, 0, 0),
+                    end_time=datetime.datetime(2015, 8, 2, 11, 0, 0),
+                ),
+            ])
+        assert task.total_time == datetime.timedelta(hours=1, minutes=30)
+
+    def test_task_total_time___active_task___one_slice(self):
+        task = document.Task(
+            _id='a',
+            is_active=True,
+            time_slices=[
+                document.TimeSlice(
+                    start_time=datetime.datetime(2015, 8, 1, 10, 0, 0),
+                )])
+        with freezegun.freeze_time('2015-08-01T10:30:00Z'):
+            assert task.total_time == datetime.timedelta(minutes=30)
+
+    def test_task_total_time___active_task___multiple_slices(self):
+        task = document.Task(
+            _id='a',
+            is_active=True,
+            time_slices=[
+                document.TimeSlice(
+                    start_time=datetime.datetime(2015, 8, 1, 10, 0, 0),
+                    end_time=datetime.datetime(2015, 8, 1, 10, 30, 0),
+                ),
+                document.TimeSlice(
+                    start_time=datetime.datetime(2015, 8, 2, 10, 0, 0),
+                ),
+            ])
+        with freezegun.freeze_time('2015-08-02T10:30:00Z'):
+            assert task.total_time == datetime.timedelta(minutes=60)

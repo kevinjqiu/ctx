@@ -32,6 +32,21 @@ class Task(mapping.Document):
             self._handle_from_active_to_inactive()
         self.is_active = is_active
 
+    @property
+    def total_time(self):
+        if len(self.time_slices) == 0:
+            return datetime.timedelta(0)
+
+        total = datetime.timedelta(0)
+        for time_slice in self.time_slices:
+            end_time = datetime.datetime.utcnow()
+            if time_slice.end_time:
+                end_time = time_slice.end_time
+
+            total += end_time - time_slice.start_time
+
+        return total
+
     def _handle_from_inactive_to_active(self):
         self.time_slices.append(
             TimeSlice(start_time=datetime.datetime.utcnow()))
