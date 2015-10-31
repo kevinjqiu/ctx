@@ -5,9 +5,9 @@ from ctx import exception
 def new_task(doc_mgr, id, description):
     try:
         task = doc_mgr.create_task(_id=id)
-        # get the current active task
-        # set is_active to False
-        # set this task.is_active to True
+        current_task = doc_mgr.get_current_task()
+        if current_task:
+            current_task.set_active(False)
         task.set_active(True)
         doc_mgr.update_task(task)
     except exception.DuplicateTaskID:

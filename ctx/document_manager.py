@@ -19,7 +19,7 @@ class DocumentManager(object):
         if result.total_rows == 0:
             return None
         if result.total_rows > 1:
-            raise RuntimeError('More than 1 active tasks')
+            raise exception.MultipleActiveTasks()
         return result.rows[0]
 
     def create_task(self, **kwargs):
