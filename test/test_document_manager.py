@@ -64,3 +64,19 @@ class TestDocumentManager(NeedsDatabase):
         t3.store(database.db)
         task = self.document_manager.get_current_task()
         assert task.id == t1.id
+
+    def test_get_current_task___no_active_task(self):
+        for task in [document.Task(_id='a', is_active=False),
+                     document.Task(_id='b', is_active=False),
+                     document.Task(_id='c', is_active=False)]:
+            task.store(database.db)
+        task = self.document_manager.get_current_task()
+        assert task is None
+
+    def test_get_current_task___too_many_active_tasks(self):
+        for task in [document.Task(_id='a', is_active=True),
+                     document.Task(_id='b', is_active=True),
+                     document.Task(_id='c', is_active=False)]:
+            task.store(database.db)
+        with pytest.raises(RuntimeError):
+            task = self.document_manager.get_current_task()

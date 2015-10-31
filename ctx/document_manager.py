@@ -18,7 +18,8 @@ class DocumentManager(object):
                               wrapper=transform.create_task_from_view_result)
         if result.total_rows == 0:
             return None
-        assert result.total_rows <= 1
+        if result.total_rows > 1:
+            raise RuntimeError('More than 1 active tasks')
         return result.rows[0]
 
     def create_task(self, **kwargs):
