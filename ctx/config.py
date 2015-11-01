@@ -1,7 +1,7 @@
 import os
 
 
-ctx_cfg = os.environ.get('CTX_CFG')
+ctx_cfg = os.environ.get('CTX_CFG', 'default')
 
 
 config_file = os.path.abspath(os.path.join(os.path.dirname(__file__),
