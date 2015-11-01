@@ -4,3 +4,7 @@ class DuplicateTaskID(Exception):
 
 class MultipleActiveTasks(Exception):
     pass
+
+
+class TaskNotFound(Exception):
+    pass

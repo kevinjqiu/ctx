@@ -14,7 +14,7 @@ class TestNewTaskCommand(NeedsDatabase):
     @freezegun.freeze_time('2015-10-10T10:10:10Z')
     def test_create_new_task(self, doc_mgr, runner):
         result = runner.invoke(cli.cmd_new, ['ABC'])
-        assert result.output == "Created task 'ABC'\n"
+        assert result.output == "Created task 'ABC'\nSwitched to task 'ABC'\n"
         active_task = doc_mgr.get_active_task()
         assert active_task.id == 'ABC'
         assert len(active_task.time_slices) == 1
@@ -24,7 +24,7 @@ class TestNewTaskCommand(NeedsDatabase):
     @freezegun.freeze_time('2015-10-10T10:10:10Z')
     def test_create_new_task___with_description(self, doc_mgr, runner):
         result = runner.invoke(cli.cmd_new, ['-d', 'description', 'ABC'])
-        assert result.output == "Created task 'ABC'\n"
+        assert result.output == "Created task 'ABC'\nSwitched to task 'ABC'\n"
         active_task = doc_mgr.get_active_task()
         assert active_task.id == 'ABC'
         assert active_task.description == 'description'
@@ -42,7 +42,7 @@ class TestNewTaskCommand(NeedsDatabase):
 
         result = runner.invoke(cli.cmd_new, ['DEF'])
         assert result.exception is None
-        assert result.output == "Created task 'DEF'\n"
+        assert result.output == "Created task 'DEF'\nSwitched to task 'DEF'\n"
 
         previous_task = doc_mgr.db['ABC']
         assert not previous_task.get('is_active')

@@ -34,6 +34,22 @@ def cmd_info(doc_mgr):
     click.echo('{}'.format(current_task.id))
 
 
+@click.command(name='switch')
+@click.argument('id')
+@inject_document_manager
+def cmd_switch(doc_mgr, id):
+    task = doc_mgr.get_task_by_id(id)
+    current_task = doc_mgr.get_active_task()
+    if current_task:
+        current_task.set_active(False)
+        doc_mgr.update_task(current_task)
+
+    task.set_active(True)
+    doc_mgr.update_task(task)
+
+    click.echo('Switched to task {!r}'.format(id))
+
+
 @click.command(name='new')
 @click.option('-d', '--description', default='', help='summary of the task')
 @click.argument('id')
@@ -41,6 +57,14 @@ def cmd_info(doc_mgr):
 def cmd_new(doc_mgr, id, description):
     try:
         task = doc_mgr.create_task(_id=id)
+        if description:
+            task.description = description
+        doc_mgr.update_task(task)
+        click.echo('Created task {!r}'.format(id))
+    except exception.DuplicateTaskID:
+        click.echo('Cannot create task {!r}: Duplicate task ID'.format(id))
+    else:
+        # TODO: refactor to call cmd_switch
         current_task = doc_mgr.get_active_task()
         if current_task:
             current_task.set_active(False)
@@ -48,15 +72,8 @@ def cmd_new(doc_mgr, id, description):
 
         task.set_active(True)
 
-        if description:
-            task.description = description
-
         doc_mgr.update_task(task)
-    except exception.DuplicateTaskID:
-        click.echo('Cannot create task {!r}: Duplicate task ID'.format(id))
-    else:
-        click.echo('Created task {!r}'.format(task._id))
-        return task
+        click.echo('Switched to task {!r}'.format(task._id))
 
 
 @click.command(name='list')
@@ -73,3 +90,4 @@ main.add_command(cmd_info)
 main.add_command(cmd_new)
 main.add_command(cmd_list)
 main.add_command(cmd_version)
+main.add_command(cmd_switch)

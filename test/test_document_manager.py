@@ -74,3 +74,14 @@ class TestDocumentManager(NeedsDatabase):
             task.store(database.db)
         with pytest.raises(exception.MultipleActiveTasks):
             task = self.document_manager.get_active_task()
+
+    def test_get_task_by_id(self):
+        for task in [document.Task(_id='a', is_active=True),
+                     document.Task(_id='c', is_active=False)]:
+            task.store(database.db)
+        task = self.document_manager.get_task_by_id('a')
+        assert task.id == 'a'
+
+    def test_get_task_by_id___task_not_exists(self):
+        with pytest.raises(exception.TaskNotFound):
+            self.document_manager.get_task_by_id('a')

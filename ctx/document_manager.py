@@ -13,6 +13,15 @@ class DocumentManager(object):
     def __init__(self, db):
         self.db = db
 
+    def get_task_by_id(self, id):
+        try:
+            task = document.Task(**self.db[id])
+            task._data['_rev'] = self.db[id].rev
+        except couchdb.http.ResourceNotFound:
+            raise exception.TaskNotFound()
+        else:
+            return task
+
     def get_tasks(self):
         return self.db.view(view.GetTasks.uri(),
                             wrapper=transform.create_task_from_view_result)
