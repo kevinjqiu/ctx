@@ -16,8 +16,10 @@ Feature: context new
         And The active task is "TASK0"
 
     Scenario: create a new task and switch to it
-        Given I have an active task "TASK0"
+        Given The current time is "2015-01-01 10:00:00"
+        And I have an active task "TASK0"
         When I invoke the command "ctx new -s TASK1"
         Then I should see "Created task 'TASK1'"
         And I should see "Switched to task 'TASK1'"
         And The active task is "TASK1"
+        And The TASK0 should end at 2015-01-01 10:00:00
