@@ -51,26 +51,26 @@ class TestDocumentManager(NeedsDatabase):
         assert result.rows[0].id == 'a'
         assert result.rows[0].is_active is False
 
-    def test_get_current_task(self):
+    def test_get_active_task(self):
         for task in [document.Task(_id='a', is_active=True),
                      document.Task(_id='b', is_active=False),
                      document.Task(_id='c', is_active=False)]:
             task.store(database.db)
-        task = self.document_manager.get_current_task()
+        task = self.document_manager.get_active_task()
         assert task.id == 'a'
 
-    def test_get_current_task___no_active_task(self):
+    def test_get_active_task___no_active_task(self):
         for task in [document.Task(_id='a', is_active=False),
                      document.Task(_id='b', is_active=False),
                      document.Task(_id='c', is_active=False)]:
             task.store(database.db)
-        task = self.document_manager.get_current_task()
+        task = self.document_manager.get_active_task()
         assert task is None
 
-    def test_get_current_task___too_many_active_tasks(self):
+    def test_get_active_task___too_many_active_tasks(self):
         for task in [document.Task(_id='a', is_active=True),
                      document.Task(_id='b', is_active=True),
                      document.Task(_id='c', is_active=False)]:
             task.store(database.db)
         with pytest.raises(exception.MultipleActiveTasks):
-            task = self.document_manager.get_current_task()
+            task = self.document_manager.get_active_task()

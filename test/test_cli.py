@@ -9,6 +9,8 @@ def test_version(runner):
 
 
 class TestNewTaskCommand(NeedsDatabase):
-    def test_create_new_task(self, runner):
+    def test_create_new_task(self, doc_mgr, runner):
         result = runner.invoke(cli.cmd_new, ['ABC'])
         assert result.output == "Created task 'ABC'\n"
+        active_task = doc_mgr.get_active_task()
+        assert active_task.id == 'ABC'

@@ -13,7 +13,7 @@ class DocumentManager(object):
         return self.db.view(view.GetTasks.uri(),
                             wrapper=transform.create_task_from_view_result)
 
-    def get_current_task(self):
+    def get_active_task(self):
         result = self.db.view(view.GetActiveTask.uri(),
                               wrapper=transform.create_task_from_view_result)
         if result.total_rows == 0:

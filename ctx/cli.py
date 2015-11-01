@@ -1,8 +1,7 @@
 import click
 import functools
 
-from ctx import (
-    action, version, config, database, document_manager)
+from ctx import exception, version, config, database, document_manager
 
 
 def inject_document_manager(fn):
@@ -28,7 +27,7 @@ def cmd_version():
 @click.command(name='info')
 @inject_document_manager
 def cmd_info(doc_mgr):
-    current_task = doc_mgr.get_current_task()
+    current_task = doc_mgr.get_active_task()
     if not current_task:
         click.echo('No active tasks')
         return
@@ -42,7 +41,7 @@ def cmd_info(doc_mgr):
 def cmd_new(doc_mgr, id, description):
     try:
         task = doc_mgr.create_task(_id=id)
-        current_task = doc_mgr.get_current_task()
+        current_task = doc_mgr.get_active_task()
         if current_task:
             current_task.set_active(False)
         task.set_active(True)
