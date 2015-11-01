@@ -52,10 +52,11 @@ def cmd_switch(doc_mgr, id):
 
 @click.command(name='new')
 @click.option('-d', '--description', default='', help='summary of the task')
+@click.option('-s', '--switch', default=False, is_flag=True, help='create a new task and switch to it')
 @click.argument('id')
 @click.pass_context
 @inject_document_manager
-def cmd_new(doc_mgr, cli_context, id, description):
+def cmd_new(doc_mgr, cli_context, id, description, switch):
     try:
         task = doc_mgr.create_task(_id=id)
         if description:
@@ -65,7 +66,8 @@ def cmd_new(doc_mgr, cli_context, id, description):
     except exception.DuplicateTaskID:
         click.echo('Cannot create task {!r}: Duplicate task ID'.format(id))
     else:
-        cli_context.invoke(cmd_switch, id=id)
+        if switch:
+            cli_context.invoke(cmd_switch, id=id)
 
 
 @click.command(name='list')
@@ -73,9 +75,11 @@ def cmd_new(doc_mgr, cli_context, id, description):
 def cmd_list(doc_mgr):
     tasks = doc_mgr.get_tasks()
     for task in tasks.rows:
-        click.echo('{} {} {} {}'.format(
-            '*' if task.is_active else ' ',
-            task.id, task.get('description'), task.total_time))
+        click.echo('{is_active} {task_id} {description} {total_time}'.format(
+            is_active='*' if task.is_active else ' ',
+            task_id=task.id,
+            description=task.get('description'),
+            total_time=task.total_time))
 
 
 main.add_command(cmd_info)
