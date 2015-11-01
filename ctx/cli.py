@@ -44,7 +44,13 @@ def cmd_new(doc_mgr, id, description):
         current_task = doc_mgr.get_active_task()
         if current_task:
             current_task.set_active(False)
+            doc_mgr.update_task(current_task)
+
         task.set_active(True)
+
+        if description:
+            task.description = description
+
         doc_mgr.update_task(task)
     except exception.DuplicateTaskID:
         click.echo('Cannot create task {!r}: Duplicate task ID'.format(id))
@@ -58,7 +64,9 @@ def cmd_new(doc_mgr, id, description):
 def cmd_list(doc_mgr):
     tasks = doc_mgr.get_tasks()
     for task in tasks.rows:
-        click.echo('{} {} {}'.format(task.id, task.get('description'), task.total_time))
+        click.echo('{} {} {} {}'.format(
+            '*' if task.is_active else ' ',
+            task.id, task.get('description'), task.total_time))
 
 
 main.add_command(cmd_info)

@@ -45,11 +45,11 @@ class TestTask(NeedsDatabase):
                              description='Aye Bee See',
                              is_active=True,
                              time_slices=[document.TimeSlice(note='note')])
-        task.store(database.db)
-        task = database.db['ABC-123']
-        time_slices = task.get('time_slices')
+        time_slices = task.time_slices
         assert len(time_slices) == 1
         assert time_slices[0].get('note') == 'note'
+        assert time_slices[0].start_time is None
+        assert time_slices[0].end_time is None
 
     def test_task_set_active___no_previous_timeslice(self):
         task = document.Task(_id='ABC-123',

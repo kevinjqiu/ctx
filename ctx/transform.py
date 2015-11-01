@@ -14,7 +14,12 @@ def create_task_from_view_result(value):
     task_params['time_slices'] = map(create_time_slice,
                                      task_params['time_slices'])
     convert_to_datetime(task_params, 'created_at')
-    return document.Task(**task_params)
+    task = document.Task(**task_params)
+    task._data.update({
+        '_id': task_params['_id'],
+        '_rev': task_params['_rev'],
+    })
+    return task
 
 
 def create_time_slice(time_slice_dict):

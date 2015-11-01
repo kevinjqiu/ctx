@@ -1,8 +1,12 @@
 import datetime
+import logging
 
 import couchdb
 
 from ctx import document, exception, view, transform
+
+
+log = logging.getLogger(__name__)
 
 
 class DocumentManager(object):
@@ -20,6 +24,7 @@ class DocumentManager(object):
             return None
         if result.total_rows > 1:
             raise exception.MultipleActiveTasks()
+
         return result.rows[0]
 
     def create_task(self, **kwargs):
@@ -36,4 +41,4 @@ class DocumentManager(object):
             return task
 
     def update_task(self, task):
-        task.store(self.db)
+        return task.store(self.db)

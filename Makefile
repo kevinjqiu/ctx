@@ -27,7 +27,7 @@ lint:
 	flake8 ctx test --max-line-length=120
 
 test:
-	CTX_CFG=test py.test -s
+	CTX_CFG=test py.test $(PYTEST_OPTS)
 
 test-all:
 	tox
