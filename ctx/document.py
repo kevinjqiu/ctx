@@ -1,9 +1,11 @@
-import datetime
+import calendar
 import logging
 import time
 import uuid
 
 from couchdb import mapping
+from datetime import datetime, time, timedelta
+from time import struct_time
 
 
 log = logging.getLogger(__name__)
@@ -11,10 +13,12 @@ log = logging.getLogger(__name__)
 
 class UTCDateTimeField(mapping.DateTimeField):
     def _to_json(self, value):
-        if isinstance(value, time.struct_time):
-            value = datetime.datetime.utcfromtimestamp(timegm(value))
-        elif not isinstance(value, datetime.datetime):
-            value = datetime.datetime.combine(value, time(0))
+        if isinstance(value, str):
+            return value
+        if isinstance(value, struct_time):
+            value = datetime.utcfromtimestamp(calendar.timegm(value))
+        elif not isinstance(value, datetime):
+            value = datetime.combine(value, time(0))
         value = value.replace(microsecond=0)
         return value.isoformat().split('+')[0] + 'Z'
 
@@ -46,11 +50,11 @@ class Task(mapping.Document):
     @property
     def total_time(self):
         if len(self.time_slices) == 0:
-            return datetime.timedelta(0)
+            return timedelta(0)
 
-        total = datetime.timedelta(0)
+        total = timedelta(0)
         for time_slice in self.time_slices:
-            end_time = datetime.datetime.utcnow()
+            end_time = datetime.utcnow()
             if time_slice.end_time:
                 end_time = time_slice.end_time
 
@@ -60,7 +64,7 @@ class Task(mapping.Document):
 
     def _handle_from_inactive_to_active(self):
         self.time_slices.append(
-            TimeSlice(start_time=datetime.datetime.utcnow()))
+            TimeSlice(start_time=datetime.utcnow()))
 
     def _handle_from_active_to_inactive(self):
         if len(self.time_slices) < 1:
@@ -69,4 +73,4 @@ class Task(mapping.Document):
             log.warning('Integrity error: '
                         'The last time slice has a not null end_time')
             return
-        self.time_slices[-1].end_time = datetime.datetime.utcnow()
+        self.time_slices[-1].end_time = datetime.utcnow()

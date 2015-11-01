@@ -53,8 +53,9 @@ def cmd_switch(doc_mgr, id):
 @click.command(name='new')
 @click.option('-d', '--description', default='', help='summary of the task')
 @click.argument('id')
+@click.pass_context
 @inject_document_manager
-def cmd_new(doc_mgr, id, description):
+def cmd_new(doc_mgr, cli_context, id, description):
     try:
         task = doc_mgr.create_task(_id=id)
         if description:
@@ -64,16 +65,7 @@ def cmd_new(doc_mgr, id, description):
     except exception.DuplicateTaskID:
         click.echo('Cannot create task {!r}: Duplicate task ID'.format(id))
     else:
-        # TODO: refactor to call cmd_switch
-        current_task = doc_mgr.get_active_task()
-        if current_task:
-            current_task.set_active(False)
-            doc_mgr.update_task(current_task)
-
-        task.set_active(True)
-
-        doc_mgr.update_task(task)
-        click.echo('Switched to task {!r}'.format(task._id))
+        cli_context.invoke(cmd_switch, id=id)
 
 
 @click.command(name='list')
