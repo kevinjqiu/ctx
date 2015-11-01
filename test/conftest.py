@@ -4,9 +4,15 @@ from ctx import database, document_manager
 import pytest
 
 
+class StatefulCliRunner(CliRunner):
+    def invoke(self, *args, **kwargs):
+        self.last_result = super().invoke(*args, **kwargs)
+        return self.last_result
+
+
 @pytest.fixture(scope='function')
 def runner(request):
-    return CliRunner()
+    return StatefulCliRunner()
 
 
 @pytest.fixture(scope='function')
