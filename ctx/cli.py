@@ -44,7 +44,7 @@ def cmd_new(doc_mgr, id, description):
 def cmd_list(doc_mgr):
     tasks = doc_mgr.get_tasks()
     for task in tasks.rows:
-        click.echo('{} {}'.format(task.doc.id, task.doc.get('description')))
+        click.echo('{} {} {}'.format(task.id, task.get('description'), task.total_time))
 
 
 main.add_command(cmd_info)

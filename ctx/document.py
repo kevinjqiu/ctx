@@ -1,5 +1,6 @@
 import datetime
 import logging
+import time
 import uuid
 
 from couchdb import mapping
@@ -8,9 +9,19 @@ from couchdb import mapping
 log = logging.getLogger(__name__)
 
 
+class UTCDateTimeField(mapping.DateTimeField):
+    def _to_json(self, value):
+        if isinstance(value, time.struct_time):
+            value = datetime.datetime.utcfromtimestamp(timegm(value))
+        elif not isinstance(value, datetime.datetime):
+            value = datetime.datetime.combine(value, time(0))
+        value = value.replace(microsecond=0)
+        return value.isoformat().split('+')[0] + 'Z'
+
+
 TimeSlice = mapping.Mapping.build(
-    start_time=mapping.DateTimeField(default=None),
-    end_time=mapping.DateTimeField(default=None),
+    start_time=UTCDateTimeField(default=None),
+    end_time=UTCDateTimeField(default=None),
     note=mapping.TextField(default=''),
 )
 
@@ -18,7 +29,7 @@ TimeSlice = mapping.Mapping.build(
 class Task(mapping.Document):
     _id = mapping.TextField(default=uuid.uuid4().hex[:10])
     description = mapping.TextField()
-    created_at = mapping.DateTimeField(default=None)
+    created_at = UTCDateTimeField(default=None)
     time_slices = mapping.ListField(mapping.DictField(TimeSlice))
     is_active = mapping.BooleanField(default=False)
 
