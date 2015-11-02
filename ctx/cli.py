@@ -25,16 +25,25 @@ def cmd_version():
 
 
 @click.command(name='info')
+@click.option('-f', '--format-str', default=None, help=('Format the output.\n'
+                                                        '{id} - the id of the task\n'
+                                                        '{description} - description of the task\n'
+                                                        '{duration} - the duration of the task\n'
+                                                        '{status} - the status of the task\n'))
 @inject_document_manager
-def cmd_info(doc_mgr):
+def cmd_info(doc_mgr, format_str):
     current_task = doc_mgr.get_active_task()
     if not current_task:
         click.echo('No active tasks')
         return
-    click.echo('task: {} {}\ntotal time: {}\nstatus: {}'.format(current_task.id,
-                                                                current_task.description,
-                                                                current_task.total_time,
-                                                                current_task.status.name))
+
+    if not format_str:
+        format_str = 'task: {id} {description}\ntotal time: {duration}\nstatus: {status}'
+
+    click.echo(format_str.format(id=current_task.id,
+                                 description=current_task.description,
+                                 duration=current_task.total_time,
+                                 status=current_task.status.name))
 
 
 @click.command(name='switch')
