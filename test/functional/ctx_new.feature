@@ -22,4 +22,4 @@ Feature: context new
         Then I should see "Created task 'TASK1'"
         And I should see "Switched to task 'TASK1'"
         And The active task is "TASK1"
-        And The TASK0 should end at 2015-01-01 10:00:00
+        And TASK1 should start at 2015-01-01 10:00:00

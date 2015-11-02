@@ -61,7 +61,13 @@ def assert_current_task(doc_mgr, task_id):
     assert task.id == task_id
 
 
-@then(parsers.re('The (?P<task_id>.+) should end at (?P<end_time>.+)'))
+@then(parsers.re('(?P<task_id>.+) should end at (?P<end_time>.+)'))
 def assert_task_end_time(doc_mgr, task_id, end_time):
     task = doc_mgr.get_task_by_id(task_id)
-    assert task.time_slices[-1].end_time == end_time
+    assert str(task.time_slices[-1].end_time) == end_time
+
+
+@then(parsers.re('(?P<task_id>.+) should start at (?P<start_time>.+)'))
+def assert_task_start_time(doc_mgr, task_id, start_time):
+    task = doc_mgr.get_task_by_id(task_id)
+    assert str(task.time_slices[-1].start_time) == start_time
