@@ -31,9 +31,10 @@ def cmd_info(doc_mgr):
     if not current_task:
         click.echo('No active tasks')
         return
-    click.echo('task: {} {}\ntotal time: {}'.format(current_task.id,
-                                                    current_task.description,
-                                                    current_task.total_time))
+    click.echo('task: {} {}\ntotal time: {}\nstatus: {}'.format(current_task.id,
+                                                                current_task.description,
+                                                                current_task.total_time,
+                                                                current_task.status.name))
 
 
 @click.command(name='switch')

@@ -149,3 +149,41 @@ class TestTask(NeedsDatabase):
             ])
         with freezegun.freeze_time('2015-08-02T10:30:00Z'):
             assert task.total_time == datetime.timedelta(minutes=60)
+
+    def test_task_status___no_time_slice(self):
+        task = document.Task(
+            _id='a',
+            is_active=True,
+        )
+        assert task.status == document.TaskStatus.not_started
+
+    def test_task_status___running(self):
+        task = document.Task(
+            _id='a',
+            is_active=True,
+            time_slices=[
+                document.TimeSlice(
+                    start_time=datetime.datetime(2015, 8, 1, 10, 0, 0),
+                    end_time=datetime.datetime(2015, 8, 1, 10, 30, 0),
+                ),
+                document.TimeSlice(
+                    start_time=datetime.datetime(2015, 8, 2, 10, 0, 0),
+                ),
+            ])
+        assert task.status == document.TaskStatus.running
+
+    def test_task_status___paused(self):
+        task = document.Task(
+            _id='a',
+            is_active=True,
+            time_slices=[
+                document.TimeSlice(
+                    start_time=datetime.datetime(2015, 8, 1, 10, 0, 0),
+                    end_time=datetime.datetime(2015, 8, 1, 10, 30, 0),
+                ),
+                document.TimeSlice(
+                    start_time=datetime.datetime(2015, 8, 2, 10, 0, 0),
+                    end_time=datetime.datetime(2015, 8, 2, 11, 0, 0),
+                ),
+            ])
+        assert task.status == document.TaskStatus.stopped

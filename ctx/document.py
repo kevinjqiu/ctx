@@ -1,4 +1,5 @@
 import calendar
+import enum
 import logging
 import time
 import uuid
@@ -9,6 +10,12 @@ from time import struct_time
 
 
 log = logging.getLogger(__name__)
+
+
+class TaskStatus(enum.Enum):
+    not_started = 'not started'
+    running = 'running'
+    stopped = 'stopped'
 
 
 class UTCDateTimeField(mapping.DateTimeField):
@@ -61,6 +68,18 @@ class Task(mapping.Document):
             total += end_time - time_slice.start_time
 
         return total
+
+    @property
+    def status(self):
+        if len(self.time_slices) == 0:
+            return TaskStatus.not_started
+
+        latest_slice = self.time_slices[-1]
+
+        if not latest_slice.end_time:
+            return TaskStatus.running
+        else:
+            return TaskStatus.stopped
 
     def _handle_from_inactive_to_active(self):
         self.time_slices.append(

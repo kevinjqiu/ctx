@@ -14,4 +14,4 @@ Feature: context info
         When I invoke the command "ctx info"
         Then I should see "task: TASK0"
         And I should see "total time: 1:00:00"
-        # And I should see "status: running"
+        And I should see "status: running"
