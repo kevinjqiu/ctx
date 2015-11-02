@@ -5,6 +5,7 @@ from pytest_bdd import given, when, then, parsers
 
 SUBCOMMAND_MAP = {
     'new': cli.cmd_new,
+    'info': cli.cmd_info,
 }
 
 

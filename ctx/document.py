@@ -4,7 +4,7 @@ import time
 import uuid
 
 from couchdb import mapping
-from datetime import datetime, time, timedelta
+from datetime import datetime, timedelta
 from time import struct_time
 
 

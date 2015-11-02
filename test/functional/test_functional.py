@@ -5,20 +5,25 @@ from .step import *  # noqa
 
 
 @scenario('ctx_new.feature', 'duplicate task id')
-def test_duplicate_task_id():
+def test_new___duplicate_task_id():
     pass
 
 
 @scenario('ctx_new.feature', 'create a new task')
-def test_create_a_new_task():
+def test_new():
     pass
 
 
 @scenario('ctx_new.feature', 'create a new task and switch to it')
-def test_create_and_switch_task():
+def test_new___and_switch_task():
     pass
 
 
 @scenario('ctx_new.feature', 'create a new task with description')
-def test_create_with_description():
+def test_new___with_description():
+    pass
+
+
+@scenario('ctx_info.feature', 'no current context')
+def test_info___no_active_task():
     pass

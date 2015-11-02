@@ -20,7 +20,7 @@ class TestTask(NeedsDatabase):
         task.store(database.db)
 
         task = database.db['abc']
-        assert task.get('description') is None
+        assert task.get('description') == ''
         assert task.get('is_active') is False
         assert task.get('time_slices') == []
 
