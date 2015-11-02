@@ -27,3 +27,11 @@ def test_new___with_description():
 @scenario('ctx_info.feature', 'no current context')
 def test_info___no_active_task():
     pass
+
+@scenario('ctx_info.feature', 'show current context')
+def test_info___show_current_task():
+    pass
+
+@scenario('ctx_info.feature', 'show current context with custom format string')
+def test_info___show_current_task_with_format_string():
+    pass
