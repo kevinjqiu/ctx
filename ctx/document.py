@@ -32,7 +32,7 @@ TimeSlice = mapping.Mapping.build(
 
 class Task(mapping.Document):
     _id = mapping.TextField(default=uuid.uuid4().hex[:10])
-    description = mapping.TextField()
+    description = mapping.TextField(default='')
     created_at = UTCDateTimeField(default=None)
     time_slices = mapping.ListField(mapping.DictField(TimeSlice))
     is_active = mapping.BooleanField(default=False)
