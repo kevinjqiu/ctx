@@ -1,5 +1,5 @@
 import freezegun
-from ctx import cli, database, view
+from ctx import cli, database, view, document
 from pytest_bdd import scenario, given, when, then, parsers
 
 
@@ -15,6 +15,11 @@ def test_create_a_new_task():
 
 @scenario('ctx_new.feature', 'create a new task and switch to it')
 def test_create_and_switch_task():
+    pass
+
+
+@scenario('ctx_new.feature', 'create a new task with description')
+def test_create_with_description():
     pass
 
 
@@ -37,9 +42,12 @@ def set_current_time(request, time):
     request.freezed_time.__enter__()
 
 
-@given(parsers.re('I have an active task "(?P<task_id>.+)"'))
-def create_a_new_task(doc_mgr, task_id):
-    doc_mgr.create_task(_id=task_id, is_active=True)
+@given(parsers.re('I have an active task "(?P<task_id>.+?)"(?: started at "(?P<start_time>.+)")?'))
+def create_a_new_task(doc_mgr, task_id, start_time):
+    task = doc_mgr.create_task(_id=task_id, is_active=True)
+    if start_time:
+        task.time_slices.append(document.TimeSlice(start_time=start_time))
+        doc_mgr.update_task(task)
 
 
 @when(parsers.re('I invoke the command "(?P<command>.+)"'))
@@ -71,3 +79,15 @@ def assert_task_end_time(doc_mgr, task_id, end_time):
 def assert_task_start_time(doc_mgr, task_id, start_time):
     task = doc_mgr.get_task_by_id(task_id)
     assert str(task.time_slices[-1].start_time) == start_time
+
+
+@then(parsers.re('(?P<task_id>.+) should have duration "(?P<duration>.+)"'))
+def assert_duration(doc_mgr, task_id, duration):
+    task = doc_mgr.get_task_by_id(task_id)
+    assert str(task.total_time) == duration
+
+
+@then(parsers.re('(?P<task_id>.+) should have description "(?P<description>.+)"'))
+def assert_description(doc_mgr, task_id, description):
+    task = doc_mgr.get_task_by_id(task_id)
+    assert task.description == description
