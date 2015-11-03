@@ -13,6 +13,35 @@ from ctx import exception
 log = logging.getLogger(__name__)
 
 
+class Duration():
+    def __init__(self, timedelta_object):
+        self.timedelta = timedelta_object
+
+    def __getattr__(self, key):
+        return getattr(self.timedelta, key)
+
+    def __str__(self):
+        pieces = []
+        if self.timedelta.days:
+            pieces.append('{}d'.format(self.timedelta.days))
+        if self.timedelta.seconds:
+            hours = self.timedelta.seconds // 60 // 60
+            minutes = (self.timedelta.seconds - (hours * 60 * 60)) // 60
+            if hours:
+                pieces.append('{}h'.format(hours))
+            if minutes:
+                pieces.append('{}m'.format(minutes))
+        if not pieces:
+            return '0m'
+        else:
+            return ''.join(pieces)
+
+    def __eq__(self, other):
+        if isinstance(other, timedelta):
+            return self.timedelta == other
+        return super().__eq__(other)
+
+
 class TaskStatus(enum.Enum):
     not_started = 'not started'
     running = 'running'
@@ -68,7 +97,7 @@ class Task(mapping.Document):
 
             total += end_time - time_slice.start_time
 
-        return total
+        return Duration(total)
 
     @property
     def status(self):

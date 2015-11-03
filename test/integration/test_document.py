@@ -10,6 +10,25 @@ from .base import NeedsDatabase
 is_uuid = re.compile(r'[0-9a-f]').search
 
 
+class TestDuration():
+    def test_no_duration(self):
+        assert '0m' == str(document.Duration(datetime.timedelta()))
+        assert '0m' == str(document.Duration(datetime.timedelta(0)))
+
+    def test_with_days(self):
+        assert '1d' == str(document.Duration(datetime.timedelta(days=1)))
+
+    def test_with_days_and_minutes(self):
+        assert '1d1h' == str(document.Duration(datetime.timedelta(days=1, minutes=60)))
+
+    def test_with_days_and_hours_and_minutes(self):
+        assert '1d1h1m' == str(document.Duration(datetime.timedelta(days=1, minutes=61)))
+
+    def test_no_days(self):
+        assert '1h1m' == str(document.Duration(datetime.timedelta(hours=1, minutes=1)))
+        assert '1h1m' == str(document.Duration(datetime.timedelta(minutes=61)))
+
+
 class TestTask(NeedsDatabase):
     def test_task_with_default_values(self):
         task = document.Task(_id='abc')
@@ -95,6 +114,7 @@ class TestTask(NeedsDatabase):
     def test_task_total_time___no_time_slices(self):
         task = document.Task(_id='a', time_slices=[])
         assert task.total_time == datetime.timedelta(0)
+        assert str(task.total_time) == '0m'
 
     def test_task_total_time___inactive_task___one_slice(self):
         task = document.Task(
@@ -106,6 +126,7 @@ class TestTask(NeedsDatabase):
                     end_time=datetime.datetime(2015, 8, 1, 10, 30, 0),
                 )])
         assert task.total_time == datetime.timedelta(minutes=30)
+        assert str(task.total_time) == '30m'
 
     def test_task_total_time___inactive_task___multiple_slices(self):
         task = document.Task(
@@ -122,6 +143,7 @@ class TestTask(NeedsDatabase):
                 ),
             ])
         assert task.total_time == datetime.timedelta(hours=1, minutes=30)
+        assert str(task.total_time) == '1h30m'
 
     def test_task_total_time___active_task___one_slice(self):
         task = document.Task(
@@ -131,8 +153,9 @@ class TestTask(NeedsDatabase):
                 document.TimeSlice(
                     start_time=datetime.datetime(2015, 8, 1, 10, 0, 0),
                 )])
-        with freezegun.freeze_time('2015-08-01T10:30:00Z'):
-            assert task.total_time == datetime.timedelta(minutes=30)
+        with freezegun.freeze_time('2015-08-03T10:30:00Z'):
+            assert task.total_time == datetime.timedelta(days=2, minutes=30)
+            assert str(task.total_time) == '2d30m'
 
     def test_task_total_time___active_task___multiple_slices(self):
         task = document.Task(
