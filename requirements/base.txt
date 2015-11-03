@@ -1,0 +1,4 @@
+wheel>=0.22
+clint==0.5.1
+CouchDB==1.0
+click==5.1
