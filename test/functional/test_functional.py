@@ -50,3 +50,18 @@ def test_stop___task_not_running():
 @scenario('ctx_stop.feature', 'with running task')
 def test_stop___with_running_task():
     pass
+
+
+@scenario('ctx_start.feature', 'no active task')
+def test_start___no_active_task():
+    pass
+
+
+@scenario('ctx_start.feature', 'task is already running')
+def test_start___task_already_running():
+    pass
+
+
+@scenario('ctx_start.feature', 'with stopped task')
+def test_start___with_stopped_task():
+    pass

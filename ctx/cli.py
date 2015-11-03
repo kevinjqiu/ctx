@@ -107,8 +107,8 @@ def cmd_stop(doc_mgr):
     except exception.TaskNotRunning:
         click.echo('Current task is not running')
         return
-
-    doc_mgr.update_task(task)
+    else:
+        doc_mgr.update_task(task)
 
 
 @click.command(name='start')
@@ -121,11 +121,11 @@ def cmd_start(doc_mgr):
 
     try:
         task.start()
-    except exception.TaskNotRunning:
+    except exception.TaskAlreadyRunning:
         click.echo('Current task is already running')
         return
-
-    doc_mgr.update_task(task)
+    else:
+        doc_mgr.update_task(task)
 
 
 main.add_command(cmd_info)

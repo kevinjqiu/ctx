@@ -8,6 +8,7 @@ SUBCOMMAND_MAP = {
     'new': cli.cmd_new,
     'info': cli.cmd_info,
     'stop': cli.cmd_stop,
+    'start': cli.cmd_start,
 }
 
 
@@ -25,6 +26,15 @@ def i_have_a_stopped_task(doc_mgr, task_id):
     task.time_slices.append(document.TimeSlice(
         start_time=datetime.datetime.utcnow() - datetime.timedelta(hours=1),
         end_time=datetime.datetime.utcnow() - datetime.timedelta(minutes=30),
+    ))
+    doc_mgr.update_task(task)
+
+
+@given(parsers.re('I have a running task "(?P<task_id>.+?)"'))
+def i_have_a_running_task(doc_mgr, task_id):
+    task = doc_mgr.create_task(_id=task_id, is_active=True)
+    task.time_slices.append(document.TimeSlice(
+        start_time=datetime.datetime.utcnow() - datetime.timedelta(hours=1),
     ))
     doc_mgr.update_task(task)
 

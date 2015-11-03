@@ -29,6 +29,9 @@ lint:
 test:
 	CTX_CFG=test py.test $(PYTEST_OPTS)
 
+test-functional:
+	CTX_CFG=test py.test test/functional $(PYTEST_OPTS)
+
 test-all:
 	tox
 
