@@ -55,8 +55,8 @@ sdist: clean
 	python setup.py bdist_wheel upload
 	ls -l dist
 
-build-server-image:
-	docker build -t ctx-server .
+build-image:
+	docker build -t ctx .
 
 run-dev-container: build-server-image
 	docker run --rm -it -v $(shell pwd):/app -p 8080:8080 ctx-server /bin/bash
