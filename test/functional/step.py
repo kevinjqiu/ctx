@@ -1,3 +1,4 @@
+import datetime
 import freezegun
 from ctx import cli, database, view, document
 from pytest_bdd import given, when, then, parsers
@@ -6,6 +7,7 @@ from pytest_bdd import given, when, then, parsers
 SUBCOMMAND_MAP = {
     'new': cli.cmd_new,
     'info': cli.cmd_info,
+    'stop': cli.cmd_stop,
 }
 
 
@@ -15,6 +17,16 @@ def i_have_a_clean_slate():
     database.server.delete(database.db.name)
     database.init()
     view.sync_views(database.db)
+
+
+@given(parsers.re('I have a stopped task "(?P<task_id>.+?)"'))
+def i_have_a_stopped_task(doc_mgr, task_id):
+    task = doc_mgr.create_task(_id=task_id, is_active=True)
+    task.time_slices.append(document.TimeSlice(
+        start_time=datetime.datetime.utcnow() - datetime.timedelta(hours=1),
+        end_time=datetime.datetime.utcnow() - datetime.timedelta(minutes=30),
+    ))
+    doc_mgr.update_task(task)
 
 
 @given(parsers.re('The current time is "(?P<time>.+)"'))

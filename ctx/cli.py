@@ -94,8 +94,26 @@ def cmd_list(doc_mgr):
             total_time=task.total_time))
 
 
+@click.command(name='stop')
+@inject_document_manager
+def cmd_stop(doc_mgr):
+    task = doc_mgr.get_active_task()
+    if not task:
+        click.echo('No active tasks')
+        return
+
+    try:
+        task.stop()
+    except exception.TaskNotRunning:
+        click.echo('Current task is not running')
+        return
+
+    doc_mgr.update_task(task)
+
+
 main.add_command(cmd_info)
 main.add_command(cmd_new)
 main.add_command(cmd_list)
 main.add_command(cmd_version)
 main.add_command(cmd_switch)
+main.add_command(cmd_stop)

@@ -7,6 +7,7 @@ import uuid
 from couchdb import mapping
 from datetime import datetime, timedelta
 from time import struct_time
+from ctx import exception
 
 
 log = logging.getLogger(__name__)
@@ -80,6 +81,12 @@ class Task(mapping.Document):
             return TaskStatus.running
         else:
             return TaskStatus.stopped
+
+    def stop(self):
+        if self.status != TaskStatus.running:
+            raise exception.TaskNotRunning()
+
+        self.time_slices[-1].end_time = datetime.utcnow()
 
     def _handle_from_inactive_to_active(self):
         self.time_slices.append(

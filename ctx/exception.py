@@ -8,3 +8,7 @@ class MultipleActiveTasks(Exception):
 
 class TaskNotFound(Exception):
     pass
+
+
+class TaskNotRunning(Exception):
+    pass
