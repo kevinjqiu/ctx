@@ -18,4 +18,6 @@ A todo list/time tracking tool for the command line
 Features
 --------
 
-* TODO
+* Manage your tasks (contexts) directly from the command line
+* Embrace the unix philosophy of composability
+* Deploy through docker
