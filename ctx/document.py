@@ -87,7 +87,7 @@ class Task(mapping.Document):
     @property
     def total_time(self):
         if len(self.time_slices) == 0:
-            return timedelta(0)
+            return Duration(timedelta(0))
 
         total = timedelta(0)
         for time_slice in self.time_slices:

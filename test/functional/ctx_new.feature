@@ -28,5 +28,5 @@ Feature: context new
         And I should see "Switched to task 'TASK1'"
         And The active task is "TASK1"
         And TASK0 should end at 2015-01-01 10:00:00
-        And TASK0 should have duration "1:00:00"
+        And TASK0 should have duration "1h"
         And TASK1 should start at 2015-01-01 10:00:00
