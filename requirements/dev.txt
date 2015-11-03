@@ -4,4 +4,3 @@ pytest
 pytest-bdd
 freezegun
 flake8
-arrow
