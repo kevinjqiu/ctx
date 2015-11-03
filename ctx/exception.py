@@ -12,3 +12,7 @@ class TaskNotFound(Exception):
 
 class TaskNotRunning(Exception):
     pass
+
+
+class TaskAlreadyRunning(Exception):
+    pass

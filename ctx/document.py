@@ -117,6 +117,11 @@ class Task(mapping.Document):
 
         self.time_slices[-1].end_time = datetime.utcnow()
 
+    def start(self):
+        if self.status == TaskStatus.running:
+            raise exception.TaskAlreadyRunning()
+        self.time_slices.append(TimeSlice(start_time=datetime.utcnow()))
+
     def _handle_from_inactive_to_active(self):
         self.time_slices.append(
             TimeSlice(start_time=datetime.utcnow()))

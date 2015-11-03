@@ -111,9 +111,27 @@ def cmd_stop(doc_mgr):
     doc_mgr.update_task(task)
 
 
+@click.command(name='start')
+@inject_document_manager
+def cmd_start(doc_mgr):
+    task = doc_mgr.get_active_task()
+    if not task:
+        click.echo('No active tasks')
+        return
+
+    try:
+        task.start()
+    except exception.TaskNotRunning:
+        click.echo('Current task is already running')
+        return
+
+    doc_mgr.update_task(task)
+
+
 main.add_command(cmd_info)
 main.add_command(cmd_new)
 main.add_command(cmd_list)
 main.add_command(cmd_version)
 main.add_command(cmd_switch)
 main.add_command(cmd_stop)
+main.add_command(cmd_start)
