@@ -1,3 +1,9 @@
+ctx:
+    build: .
+    links:
+        - db
+    environment:
+        - CTX_CFG=container
 db:
     image: kevinjqiu/couchdb
     environment:
